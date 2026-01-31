@@ -18,6 +18,7 @@ import buoihocRoutes from './routes/buoihoc.js';
 import phonghocRoutes from './routes/phonghoc.js';
 import xeplichRoutes from './routes/xeplich.js';
 import reportRoutes from './routes/reports.js';
+import dashboardRoutes from './routes/dashboard.js';
 
 dotenv.config();
 
@@ -44,6 +45,7 @@ app.use('/api/buoihoc', buoihocRoutes);
 app.use('/api/phonghoc', phonghocRoutes);
 app.use('/api/xeplich', xeplichRoutes);
 app.use('/api/reports', reportRoutes);
+app.use('/api/dashboard', dashboardRoutes);
 
 // Health check
 app.get('/health', (req, res) => {
