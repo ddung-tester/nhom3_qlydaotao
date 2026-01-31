@@ -82,9 +82,9 @@ export default function Dashboard() {
             </div>
 
             <div className="bg-white p-6 rounded-lg shadow">
-                <h2 className="text-xl font-semibold text-gray-800 mb-4">Chào mừng đến với Hệ thống Quản lý Trung tâm Đào tạo</h2>
+                <h2 className="text-xl font-semibold text-gray-800 mb-4">Hệ thống Quản lý Trung tâm Đào tạo nhóm 3 - HTTT</h2>
                 <p className="text-gray-600">
-                    Sử dụng menu bên trái để quản lý các chức năng của hệ thống.
+                    Menu bên trái để quản lý các chức năng của hệ thống.
                 </p>
             </div>
         </div>
