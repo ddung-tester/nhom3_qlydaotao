@@ -1,6 +1,12 @@
+code github commit:
 
+git status
+git add .
+git commit -m "mo ta thay doi"
+git push
 
 ### Port đang được sử dụng
+
 ```bash
 # Backend (5000)
 lsof -ti:5000 | xargs kill -9
@@ -10,6 +16,7 @@ lsof -ti:3000 | xargs kill -9
 ```
 
 ### Module not found
+
 ```bash
 # Cài lại dependencies
 cd backend && npm install

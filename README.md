@@ -207,3 +207,4 @@ Tất cả report đều có API backend sẵn sàng tại `/api/reports/*`:
 - **Main Content**: Nội dung chính bên phải
 - **DataTable**: Component table với hover effect, action buttons (Sửa/Xóa)
 - **Form**: Card trắng với shadow, form validation, nút Lưu/Hủy rõ ràng
+
