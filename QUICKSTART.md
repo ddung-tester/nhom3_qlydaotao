@@ -1,83 +1,4 @@
-# QUICKSTART GUIDE - Hướng dẫn chạy nhanh
 
-## Chạy nhanh trong 5 phút
-
-### 1. Setup Database (1 phút)
-```bash
-# Tạo database
-createdb training_center
-
-# Import schema và seed data
-psql -d training_center -f database/schema.sql
-psql -d training_center -f database/seed.sql
-```
-
-### 2. Chạy Backend (1 phút)
-```bash
-cd backend
-npm install
-# Sửa file .env nếu cần (đặc biệt DB_PASSWORD)
-npm start
-```
-
-✅ Backend chạy tại: http://localhost:5000
-
-### 3. Chạy Frontend (1 phút)
-```bash
-# Mở terminal mới
-cd frontend
-npm install
-npm run dev
-```
-
-✅ Frontend chạy tại: http://localhost:3000
-
-### 4. Truy cập ứng dụng
-Mở trình duyệt: **http://localhost:3000**
-
-## Test nhanh
-
-### Test Backend API
-```bash
-# Kiểm tra server
-curl http://localhost:5000/health
-
-# Lấy danh sách học viên
-curl http://localhost:5000/api/hocvien
-
-# Lấy danh sách giảng viên
-curl http://localhost:5000/api/giangvien
-```
-
-### Test Frontend
-1. Click vào "Học viên" trên sidebar → Xem danh sách
-2. Click "Thêm học viên" → Điền form → Lưu
-3. Click "Sửa" trên 1 học viên → Thay đổi → Cập nhật
-4. Thử các menu khác: Giảng viên, Nhân viên, Chương trình, v.v.
-
-## Trang đã hoàn thiện
-- ✅ Học viên (với multi-phone)
-- ✅ Giảng viên (với chuyên môn)
-- ✅ Nhân viên (với hierarchical manager)
-- ✅ Chương trình đào tạo
-- ✅ Môn học
-- ✅ Kỳ học
-
-## Các trang còn lại
-Sử dụng stub placeholder - Copy pattern từ các trang đã có để hoàn thiện.
-
-API backend đã sẵn sàng cho tất cả endpoints!
-
-## Troubleshooting
-
-### Lỗi kết nối database
-```bash
-# Kiểm tra PostgreSQL đang chạy
-pg_isready
-
-# Kiểm tra .env có đúng password không
-cat backend/.env
-```
 
 ### Port đang được sử dụng
 ```bash
@@ -94,7 +15,6 @@ lsof -ti:3000 | xargs kill -9
 cd backend && npm install
 cd frontend && npm install
 ```
-
 
 Để chuyển từ schema cũ sang schema mới (cho phép nhân viên đứng đầu không cần quản lý và ngăn tự quản lý chính mình), bạn cần chạy 3 lệnh SQL sau theo đúng thứ tự:
 
