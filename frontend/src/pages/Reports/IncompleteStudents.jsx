@@ -26,10 +26,10 @@ export default function IncompleteStudents() {
 
     const columns = [
         { label: 'Học viên', field: 'hoten' },
-        { label: 'Email', field: 'email' },
-        { label: 'Khóa', field: 'tenkhoa' },
-        { label: 'Môn chưa đạt', field: 'tenmh' },
-        { label: 'Điểm cao nhất', field: 'diem_cao_nhat', render: (row) => row.diem_cao_nhat ?? 'Chưa thi' }
+        { label: 'Môn học', field: 'tenmh' },
+        { label: 'Lần thi', field: 'lanthi', render: (row) => row.lanthi ?? 'Chưa thi' },
+        { label: 'Điểm', field: 'diem', render: (row) => row.diem ?? 'Chưa thi' },
+        { label: 'Ngày thi', field: 'ngaythi', render: (row) => row.ngaythi ? new Date(row.ngaythi).toLocaleDateString('vi-VN') : 'Chưa thi' }
     ];
 
     if (loading) return <div className="text-center py-8">Đang tải...</div>;

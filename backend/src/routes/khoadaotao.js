@@ -7,11 +7,12 @@ const router = express.Router();
 router.get('/', async (req, res) => {
     try {
         const result = await pool.query(`
-      SELECT k.*, c.tenct, ky.hocky, ky.nam
-      FROM khoadaotao k
-      LEFT JOIN chuongtrinh c ON k.ct_id = c.ct_id
-      LEFT JOIN kyhoc ky ON k.ky_id = ky.ky_id
-      ORDER BY k.kdt_id DESC
+      SELECT k.KDT_ID AS kdt_id, k.CT_ID AS ct_id, k.KY_ID AS ky_id, k.TenKhoa AS tenkhoa, k.NgayKhaiGiang AS ngaykhaigiang,
+             c.TenCT AS tenct, ky.HocKy AS hocky, ky.Nam AS nam
+      FROM KhoaDaoTao k
+      LEFT JOIN ChuongTrinh c ON k.CT_ID = c.CT_ID
+      LEFT JOIN KyHoc ky ON k.KY_ID = ky.KY_ID
+      ORDER BY k.KDT_ID DESC
     `);
         res.json(result.rows);
     } catch (error) {
@@ -24,7 +25,7 @@ router.get('/', async (req, res) => {
 router.get('/:id', async (req, res) => {
     try {
         const { id } = req.params;
-        const result = await pool.query('SELECT * FROM khoadaotao WHERE kdt_id = $1', [id]);
+        const result = await pool.query('SELECT KDT_ID AS kdt_id, CT_ID AS ct_id, KY_ID AS ky_id, TenKhoa AS tenkhoa, NgayKhaiGiang AS ngaykhaigiang FROM KhoaDaoTao WHERE KDT_ID = $1', [id]);
         if (result.rows.length === 0) {
             return res.status(404).json({ error: 'Không tìm thấy khóa đào tạo' });
         }
@@ -40,7 +41,7 @@ router.post('/', async (req, res) => {
     try {
         const { ct_id, ky_id, tenkhoa, ngaykhaigiang } = req.body;
         const result = await pool.query(
-            'INSERT INTO khoadaotao (ct_id, ky_id, tenkhoa, ngaykhaigiang) VALUES ($1, $2, $3, $4) RETURNING *',
+            'INSERT INTO KhoaDaoTao (CT_ID, KY_ID, TenKhoa, NgayKhaiGiang) VALUES ($1, $2, $3, $4) RETURNING KDT_ID AS kdt_id, CT_ID AS ct_id, KY_ID AS ky_id, TenKhoa AS tenkhoa, NgayKhaiGiang AS ngaykhaigiang',
             [ct_id, ky_id, tenkhoa, ngaykhaigiang]
         );
         res.status(201).json(result.rows[0]);
@@ -56,7 +57,7 @@ router.put('/:id', async (req, res) => {
         const { id } = req.params;
         const { ct_id, ky_id, tenkhoa, ngaykhaigiang } = req.body;
         const result = await pool.query(
-            'UPDATE khoadaotao SET ct_id = $1, ky_id = $2, tenkhoa = $3, ngaykhaigiang = $4 WHERE kdt_id = $5 RETURNING *',
+            'UPDATE KhoaDaoTao SET CT_ID = $1, KY_ID = $2, TenKhoa = $3, NgayKhaiGiang = $4 WHERE KDT_ID = $5 RETURNING KDT_ID AS kdt_id, CT_ID AS ct_id, KY_ID AS ky_id, TenKhoa AS tenkhoa, NgayKhaiGiang AS ngaykhaigiang',
             [ct_id, ky_id, tenkhoa, ngaykhaigiang, id]
         );
         if (result.rows.length === 0) {
@@ -73,7 +74,7 @@ router.put('/:id', async (req, res) => {
 router.delete('/:id', async (req, res) => {
     try {
         const { id } = req.params;
-        const result = await pool.query('DELETE FROM khoadaotao WHERE kdt_id = $1 RETURNING *', [id]);
+        const result = await pool.query('DELETE FROM KhoaDaoTao WHERE KDT_ID = $1 RETURNING KDT_ID AS kdt_id', [id]);
         if (result.rows.length === 0) {
             return res.status(404).json({ error: 'Không tìm thấy khóa đào tạo' });
         }

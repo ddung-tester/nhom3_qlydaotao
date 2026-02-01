@@ -7,13 +7,13 @@ const router = express.Router();
 router.get('/', async (req, res) => {
     try {
         const result = await pool.query(`
-      SELECT h.user_id, u.hoten, u.ngaysinh, u.email, h.diachi,
-        array_agg(us.sdt) as sodienthoai
-      FROM hocvien h
-      JOIN "User" u ON h.user_id = u.user_id
-      LEFT JOIN user_sdt us ON h.user_id = us.user_id
-      GROUP BY h.user_id, u.hoten, u.ngaysinh, u.email, h.diachi
-      ORDER BY h.user_id DESC
+      SELECT h.USER_ID AS user_id, u.HoTen AS hoten, u.NgaySinh AS ngaysinh, u.Email AS email, h.DiaChi AS diachi,
+        array_agg(us.SDT) as sodienthoai
+      FROM HocVien h
+      JOIN "User" u ON h.USER_ID = u.USER_ID
+      LEFT JOIN User_SDT us ON h.USER_ID = us.USER_ID
+      GROUP BY h.USER_ID, u.HoTen, u.NgaySinh, u.Email, h.DiaChi
+      ORDER BY h.USER_ID DESC
     `);
         res.json(result.rows);
     } catch (error) {
@@ -27,16 +27,17 @@ router.get('/:id', async (req, res) => {
     try {
         const { id } = req.params;
         const userResult = await pool.query(`
-      SELECT u.*, h.diachi FROM "User" u
-      JOIN hocvien h ON u.user_id = h.user_id
-      WHERE u.user_id = $1
+      SELECT u.USER_ID AS user_id, u.HoTen AS hoten, u.NgaySinh AS ngaysinh, u.Email AS email, h.DiaChi AS diachi 
+      FROM "User" u
+      JOIN HocVien h ON u.USER_ID = h.USER_ID
+      WHERE u.USER_ID = $1
     `, [id]);
 
         if (userResult.rows.length === 0) {
             return res.status(404).json({ error: 'Không tìm thấy học viên' });
         }
 
-        const sdtResult = await pool.query('SELECT sdt FROM user_sdt WHERE user_id = $1', [id]);
+        const sdtResult = await pool.query('SELECT SDT AS sdt FROM User_SDT WHERE USER_ID = $1', [id]);
 
         res.json({
             ...userResult.rows[0],
@@ -48,7 +49,7 @@ router.get('/:id', async (req, res) => {
     }
 });
 
-// POST - Tạo học viên mới (TRANSACTION: User + hocvien + user_sdt)
+// POST - Tạo học viên mới (TRANSACTION: User + HocVien + User_SDT)
 router.post('/', async (req, res) => {
     const client = await pool.connect();
     try {
@@ -58,14 +59,14 @@ router.post('/', async (req, res) => {
 
         // 1. Insert vào bảng User
         const userResult = await client.query(
-            'INSERT INTO "User" (hoten, ngaysinh, email) VALUES ($1, $2, $3) RETURNING user_id',
+            'INSERT INTO "User" (HoTen, NgaySinh, Email) VALUES ($1, $2, $3) RETURNING USER_ID AS user_id',
             [hoten, ngaysinh, email]
         );
         const user_id = userResult.rows[0].user_id;
 
-        // 2. Insert vào bảng hocvien
+        // 2. Insert vào bảng HocVien
         await client.query(
-            'INSERT INTO hocvien (user_id, diachi) VALUES ($1, $2)',
+            'INSERT INTO HocVien (USER_ID, DiaChi) VALUES ($1, $2)',
             [user_id, diachi]
         );
 
@@ -73,7 +74,7 @@ router.post('/', async (req, res) => {
         if (sodienthoai && sodienthoai.length > 0) {
             for (const sdt of sodienthoai) {
                 await client.query(
-                    'INSERT INTO user_sdt (user_id, sdt) VALUES ($1, $2)',
+                    'INSERT INTO User_SDT (USER_ID, SDT) VALUES ($1, $2)',
                     [user_id, sdt]
                 );
             }
@@ -101,22 +102,22 @@ router.put('/:id', async (req, res) => {
 
         // 1. Update User
         await client.query(
-            'UPDATE "User" SET hoten = $1, ngaysinh = $2, email = $3 WHERE user_id = $4',
+            'UPDATE "User" SET HoTen = $1, NgaySinh = $2, Email = $3 WHERE USER_ID = $4',
             [hoten, ngaysinh, email, id]
         );
 
-        // 2. Update hocvien
+        // 2. Update HocVien
         await client.query(
-            'UPDATE hocvien SET diachi = $1 WHERE user_id = $2',
+            'UPDATE HocVien SET DiaChi = $1 WHERE USER_ID = $2',
             [diachi, id]
         );
 
         // 3. Xóa và thêm lại số điện thoại
-        await client.query('DELETE FROM user_sdt WHERE user_id = $1', [id]);
+        await client.query('DELETE FROM User_SDT WHERE USER_ID = $1', [id]);
         if (sodienthoai && sodienthoai.length > 0) {
             for (const sdt of sodienthoai) {
                 await client.query(
-                    'INSERT INTO user_sdt (user_id, sdt) VALUES ($1, $2)',
+                    'INSERT INTO User_SDT (USER_ID, SDT) VALUES ($1, $2)',
                     [id, sdt]
                 );
             }
@@ -141,10 +142,9 @@ router.delete('/:id', async (req, res) => {
 
         const { id } = req.params;
 
-        // Xóa user_sdt, hocvien, sau đó User
-        await client.query('DELETE FROM user_sdt WHERE user_id = $1', [id]);
-        await client.query('DELETE FROM hocvien WHERE user_id = $1', [id]);
-        const result = await client.query('DELETE FROM "User" WHERE user_id = $1 RETURNING *', [id]);
+        // Xóa User_SDT, HocVien, sau đó User (Hoặc để ON DELETE CASCADE xử lý)
+        // Trong schema mới có ON DELETE CASCADE cho User_SDT và HocVien, nên chỉ cần xóa User
+        const result = await client.query('DELETE FROM "User" WHERE USER_ID = $1 RETURNING USER_ID AS user_id', [id]);
 
         if (result.rows.length === 0) {
             await client.query('ROLLBACK');

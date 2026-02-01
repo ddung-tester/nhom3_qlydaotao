@@ -7,11 +7,12 @@ const router = express.Router();
 router.get('/', async (req, res) => {
     try {
         const result = await pool.query(`
-      SELECT c.*, u.hoten as ten_nv_quanly
-      FROM chuongtrinh c
-      LEFT JOIN nhanvien nv ON c.nv_quanly_id = nv.user_id
-      LEFT JOIN "User" u ON nv.user_id = u.user_id
-      ORDER BY c.ct_id DESC
+      SELECT c.CT_ID AS ct_id, c.TenCT AS tenct, c.MoTa AS mota, c.NV_QuanLy_ID AS nv_quanly_id,
+        u.HoTen as ten_nv_quanly
+      FROM ChuongTrinh c
+      LEFT JOIN NhanVien nv ON c.NV_QuanLy_ID = nv.USER_ID
+      LEFT JOIN "User" u ON nv.USER_ID = u.USER_ID
+      ORDER BY c.CT_ID DESC
     `);
         res.json(result.rows);
     } catch (error) {
@@ -24,7 +25,7 @@ router.get('/', async (req, res) => {
 router.get('/:id', async (req, res) => {
     try {
         const { id } = req.params;
-        const result = await pool.query('SELECT * FROM chuongtrinh WHERE ct_id = $1', [id]);
+        const result = await pool.query('SELECT CT_ID AS ct_id, TenCT AS tenct, MoTa AS mota, NV_QuanLy_ID AS nv_quanly_id FROM ChuongTrinh WHERE CT_ID = $1', [id]);
         if (result.rows.length === 0) {
             return res.status(404).json({ error: 'Không tìm thấy chương trình' });
         }
@@ -40,7 +41,7 @@ router.post('/', async (req, res) => {
     try {
         const { tenct, mota, nv_quanly_id } = req.body;
         const result = await pool.query(
-            'INSERT INTO chuongtrinh (tenct, mota, nv_quanly_id) VALUES ($1, $2, $3) RETURNING *',
+            'INSERT INTO ChuongTrinh (TenCT, MoTa, NV_QuanLy_ID) VALUES ($1, $2, $3) RETURNING CT_ID AS ct_id, TenCT AS tenct, MoTa AS mota, NV_QuanLy_ID AS nv_quanly_id',
             [tenct, mota, nv_quanly_id]
         );
         res.status(201).json(result.rows[0]);
@@ -56,7 +57,7 @@ router.put('/:id', async (req, res) => {
         const { id } = req.params;
         const { tenct, mota, nv_quanly_id } = req.body;
         const result = await pool.query(
-            'UPDATE chuongtrinh SET tenct = $1, mota = $2, nv_quanly_id = $3 WHERE ct_id = $4 RETURNING *',
+            'UPDATE ChuongTrinh SET TenCT = $1, MoTa = $2, NV_QuanLy_ID = $3 WHERE CT_ID = $4 RETURNING CT_ID AS ct_id, TenCT AS tenct, MoTa AS mota, NV_QuanLy_ID AS nv_quanly_id',
             [tenct, mota, nv_quanly_id, id]
         );
         if (result.rows.length === 0) {
@@ -73,7 +74,7 @@ router.put('/:id', async (req, res) => {
 router.delete('/:id', async (req, res) => {
     try {
         const { id } = req.params;
-        const result = await pool.query('DELETE FROM chuongtrinh WHERE ct_id = $1 RETURNING *', [id]);
+        const result = await pool.query('DELETE FROM ChuongTrinh WHERE CT_ID = $1 RETURNING CT_ID AS ct_id', [id]);
         if (result.rows.length === 0) {
             return res.status(404).json({ error: 'Không tìm thấy chương trình' });
         }

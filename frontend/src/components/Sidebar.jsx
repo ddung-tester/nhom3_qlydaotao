@@ -20,7 +20,7 @@ export default function Sidebar() {
                 { path: '/monhoc', label: 'Môn học', icon: '📖' },
                 { path: '/kyhoc', label: 'Kỳ học', icon: '📅' },
                 { path: '/khoadaotao', label: 'Khóa đào tạo', icon: '🎓' },
-                { path: '/lopmonhoc', label: 'Lớp môn học', icon: '🏫' },
+                { path: '/lopmonhoc', label: 'Lớp học', icon: '🏫' },
             ]
         },
         {
@@ -36,7 +36,7 @@ export default function Sidebar() {
             items: [
                 { path: '/buoihoc', label: 'Buổi học', icon: '⏰' },
                 { path: '/phonghoc', label: 'Phòng học', icon: '🚪' },
-                { path: '/xeplich', label: 'Xếp lịch', icon: '📆' },
+                { path: '/xeplich', label: 'Thời khóa biểu', icon: '📆' },
             ]
         },
         {
@@ -61,8 +61,8 @@ export default function Sidebar() {
                             <Link
                                 to={section.path}
                                 className={`flex items-center gap-2 px-4 py-2 rounded-lg transition ${isActive(section.path)
-                                        ? 'bg-blue-100 text-blue-600 font-semibold'
-                                        : 'text-gray-700 hover:bg-gray-100'
+                                    ? 'bg-blue-100 text-blue-600 font-semibold'
+                                    : 'text-gray-700 hover:bg-gray-100'
                                     }`}
                             >
                                 <span>{section.icon}</span>
@@ -79,8 +79,8 @@ export default function Sidebar() {
                                             key={item.path}
                                             to={item.path}
                                             className={`flex items-center gap-2 px-4 py-2 rounded-lg transition text-sm ${isActive(item.path)
-                                                    ? 'bg-blue-100 text-blue-600 font-semibold'
-                                                    : 'text-gray-700 hover:bg-gray-100'
+                                                ? 'bg-blue-100 text-blue-600 font-semibold'
+                                                : 'text-gray-700 hover:bg-gray-100'
                                                 }`}
                                         >
                                             <span>{item.icon}</span>

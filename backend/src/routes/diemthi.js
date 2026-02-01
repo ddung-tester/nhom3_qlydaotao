@@ -6,14 +6,15 @@ const router = express.Router();
 router.get('/', async (req, res) => {
     try {
         const result = await pool.query(`
-      SELECT dt.*, u.hoten, u.email, l.lopmh_id, m.tenmh, k.tenkhoa
-      FROM diemthi dt
-      JOIN hocvien h ON dt.hv_id = h.user_id
-      JOIN "User" u ON h.user_id = u.user_id
-      JOIN lopmonhoc l ON dt.lopmh_id = l.lopmh_id
-      LEFT JOIN monhoc m ON l.mh_ma = m.mh_ma
-      LEFT JOIN khoadaotao k ON l.kdt_id = k.kdt_id
-      ORDER BY dt.ngaythi DESC
+      SELECT dt.HV_ID AS hv_id, dt.LopMH_ID AS lopmh_id, dt.LanThi AS lanthi, dt.Diem AS diem, dt.NgayThi AS ngaythi,
+             u.HoTen AS hoten, u.Email AS email, m.TenMH AS tenmh, k.TenKhoa AS tenkhoa
+      FROM DiemThi dt
+      JOIN HocVien h ON dt.HV_ID = h.USER_ID
+      JOIN "User" u ON h.USER_ID = u.USER_ID
+      JOIN LopMonHoc l ON dt.LopMH_ID = l.LopMH_ID
+      LEFT JOIN MonHoc m ON l.MH_MA = m.MH_MA
+      LEFT JOIN KhoaDaoTao k ON l.KDT_ID = k.KDT_ID
+      ORDER BY dt.NgayThi DESC
     `);
         res.json(result.rows);
     } catch (error) {
@@ -25,7 +26,7 @@ router.post('/', async (req, res) => {
     try {
         const { hv_id, lopmh_id, lanthi, diem, ngaythi } = req.body;
         const result = await pool.query(
-            'INSERT INTO diemthi (hv_id, lopmh_id, lanthi, diem, ngaythi) VALUES ($1, $2, $3, $4, $5) RETURNING *',
+            'INSERT INTO DiemThi (HV_ID, LopMH_ID, LanThi, Diem, NgayThi) VALUES ($1, $2, $3, $4, $5) RETURNING HV_ID AS hv_id, LopMH_ID AS lopmh_id, LanThi AS lanthi, Diem AS diem, NgayThi AS ngaythi',
             [hv_id, lopmh_id, lanthi, diem, ngaythi]
         );
         res.status(201).json(result.rows[0]);
@@ -39,7 +40,7 @@ router.put('/:hv_id/:lopmh_id/:lanthi', async (req, res) => {
         const { hv_id, lopmh_id, lanthi } = req.params;
         const { diem, ngaythi } = req.body;
         const result = await pool.query(
-            'UPDATE diemthi SET diem = $1, ngaythi = $2 WHERE hv_id = $3 AND lopmh_id = $4 AND lanthi = $5 RETURNING *',
+            'UPDATE DiemThi SET Diem = $1, NgayThi = $2 WHERE HV_ID = $3 AND LopMH_ID = $4 AND LanThi = $5 RETURNING HV_ID AS hv_id, LopMH_ID AS lopmh_id, LanThi AS lanthi, Diem AS diem, NgayThi AS ngaythi',
             [diem, ngaythi, hv_id, lopmh_id, lanthi]
         );
         res.json(result.rows[0]);
@@ -51,10 +52,7 @@ router.put('/:hv_id/:lopmh_id/:lanthi', async (req, res) => {
 router.delete('/:hv_id/:lopmh_id/:lanthi', async (req, res) => {
     try {
         const { hv_id, lopmh_id, lanthi } = req.params;
-        const result = await pool.query(
-            'DELETE FROM diemthi WHERE hv_id = $1 AND lopmh_id = $2 AND lanthi = $3 RETURNING *',
-            [hv_id, lopmh_id, lanthi]
-        );
+        const result = await pool.query('DELETE FROM DiemThi WHERE HV_ID = $1 AND LopMH_ID = $2 AND LanThi = $3 RETURNING HV_ID AS hv_id, LopMH_ID AS lopmh_id, LanThi AS lanthi', [hv_id, lopmh_id, lanthi]);
         res.json({ message: 'Xóa thành công', data: result.rows[0] });
     } catch (error) {
         res.status(500).json({ error: error.message });

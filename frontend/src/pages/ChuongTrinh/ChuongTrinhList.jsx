@@ -78,9 +78,9 @@ export default function ChuongTrinhList() {
 
     const columns = [
         { label: 'ID', field: 'ct_id' },
-        { label: 'Tên chương trình', field: 'tenct' },
-        { label: 'Mô tả', field: 'mota' },
-        { label: 'NV Quản lý', field: 'ten_nv_quanly' }
+        { label: 'Tên chương trình', field: 'tenct', render: row => row.tenct || <span className="text-red-500 font-italic">Chưa nhập tên</span> },
+        { label: 'Mô tả', field: 'mota', render: row => row.mota || <span className="text-gray-400">Không có mô tả</span> },
+        { label: 'NV Quản lý', field: 'ten_nv_quanly', render: row => row.ten_nv_quanly || <span className="text-orange-500 font-semibold">Chưa phân công</span> }
     ];
 
     if (loading) return <div className="text-center py-8">Đang tải...</div>;

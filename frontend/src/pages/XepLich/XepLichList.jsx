@@ -1,22 +1,14 @@
 import { useState, useEffect } from 'react';
 import axios from 'axios';
-import DataTable from '../../components/DataTable';
 
 const API_URL = 'http://localhost:5000/api';
 
 export default function XepLichList() {
     const [data, setData] = useState([]);
-    const [buoihocList, setBuoihocList] = useState([]);
-    const [lopmonhocList, setLopmonhocList] = useState([]);
-    const [phonghocList, setPhonghocList] = useState([]);
     const [loading, setLoading] = useState(true);
-    const [showForm, setShowForm] = useState(false);
-    const [formData, setFormData] = useState({ buoihoc_id: '', lopmh_id: '', ph_id: '' });
-    const [editingId, setEditingId] = useState(null);
 
     useEffect(() => {
         fetchData();
-        fetchRelated();
     }, []);
 
     const fetchData = async () => {
@@ -30,137 +22,107 @@ export default function XepLichList() {
         }
     };
 
-    const fetchRelated = async () => {
-        try {
-            const [bh, lmh, ph] = await Promise.all([
-                axios.get(`${API_URL}/buoihoc`),
-                axios.get(`${API_URL}/lopmonhoc`),
-                axios.get(`${API_URL}/phonghoc`)
-            ]);
-            setBuoihocList(bh.data);
-            setLopmonhocList(lmh.data);
-            setPhonghocList(ph.data);
-        } catch (error) {
-            console.error('Lỗi:', error);
-        }
-    };
+    // Get unique time slots
+    const timeSlots = [...new Set(data.map(d => `${d.giobd}-${d.giokt}`))].sort();
 
-    const handleSubmit = async (e) => {
-        e.preventDefault();
-        try {
-            if (editingId) {
-                await axios.put(`${API_URL}/xeplich/${editingId}`, formData);
-            } else {
-                await axios.post(`${API_URL}/xeplich`, formData);
-            }
-            fetchData();
-            resetForm();
-        } catch (error) {
-            alert('Lỗi: ' + (error.response?.data?.error || error.message));
-        }
-    };
+    // Get date range (grouped by week)
+    const groupedByWeek = data.reduce((acc, item) => {
+        const date = new Date(item.ngayhoc);
+        const weekStart = new Date(date);
+        weekStart.setDate(date.getDate() - date.getDay() + 1); // Monday
+        const weekKey = weekStart.toISOString().split('T')[0];
 
-    const handleEdit = (row) => {
-        setFormData({ buoihoc_id: row.buoihoc_id, lopmh_id: row.lopmh_id, ph_id: row.ph_id });
-        setEditingId(row.buoihoc_id);
-        setShowForm(true);
-    };
+        if (!acc[weekKey]) acc[weekKey] = [];
+        acc[weekKey].push(item);
+        return acc;
+    }, {});
 
-    const handleDelete = async (row) => {
-        if (window.confirm('Xác nhận xóa lịch?')) {
-            try {
-                await axios.delete(`${API_URL}/xeplich/${row.buoihoc_id}`);
-                fetchData();
-            } catch (error) {
-                alert('Lỗi: ' + (error.response?.data?.error || error.message));
-            }
-        }
-    };
+    const daysOfWeek = ['Thứ 2', 'Thứ 3', 'Thứ 4', 'Thứ 5', 'Thứ 6', 'Thứ 7', 'CN'];
 
-    const resetForm = () => {
-        setFormData({ buoihoc_id: '', lopmh_id: '', ph_id: '' });
-        setEditingId(null);
-        setShowForm(false);
+    const getScheduleCell = (weekData, dayIndex, timeSlot) => {
+        const [startTime, endTime] = timeSlot.split('-');
+        return weekData.find(item => {
+            const itemDate = new Date(item.ngayhoc);
+            const itemDay = itemDate.getDay() === 0 ? 6 : itemDate.getDay() - 1; // Convert to 0=Monday
+            return itemDay === dayIndex && item.giobd === startTime;
+        });
     };
-
-    const columns = [
-        { label: 'Ngày', field: 'ngayhoc', render: (row) => row.ngayhoc?.split('T')[0] },
-        { label: 'Giờ', render: (row) => `${row.giobd} - ${row.giokt}` },
-        { label: 'Khóa', field: 'tenkhoa' },
-        { label: 'Môn học', field: 'tenmh' },
-        { label: 'Phòng', field: 'maphong' }
-    ];
 
     if (loading) return <div className="text-center py-8">Đang tải...</div>;
 
     return (
         <div>
-            <div className="flex justify-between items-center mb-6">
-                <h1 className="text-3xl font-bold text-gray-800">Xếp lịch</h1>
-                <button onClick={() => setShowForm(!showForm)} className="px-4 py-2 bg-blue-600 text-white rounded-lg hover:bg-blue-700">
-                    {showForm ? 'Hủy' : '+ Thêm lịch'}
-                </button>
-            </div>
+            <h1 className="text-3xl font-bold text-gray-800 mb-6">Thời khóa biểu</h1>
 
-            {showForm && (
-                <div className="bg-white p-6 rounded-lg shadow mb-6">
-                    <h2 className="text-xl font-semibold mb-4">{editingId ? 'Sửa' : 'Thêm mới'}</h2>
-                    <form onSubmit={handleSubmit}>
-                        <div className="grid grid-cols-1 md:grid-cols-3 gap-4">
-                            <div>
-                                <label className="block text-sm font-medium text-gray-700 mb-1">Buổi học *</label>
-                                <select required value={formData.buoihoc_id} disabled={!!editingId}
-                                    onChange={(e) => setFormData({ ...formData, buoihoc_id: e.target.value })}
-                                    className="w-full px-3 py-2 border border-gray-300 rounded-lg focus:outline-none focus:ring-2 focus:ring-blue-500"
-                                >
-                                    <option value="">-- Chọn --</option>
-                                    {buoihocList.map((bh) => (
-                                        <option key={bh.buoihoc_id} value={bh.buoihoc_id}>
-                                            {bh.ngayhoc?.split('T')[0]} ({bh.giobd} - {bh.giokt})
-                                        </option>
-                                    ))}
-                                </select>
-                            </div>
-                            <div>
-                                <label className="block text-sm font-medium text-gray-700 mb-1">Lớp môn học *</label>
-                                <select required value={formData.lopmh_id}
-                                    onChange={(e) => setFormData({ ...formData, lopmh_id: e.target.value })}
-                                    className="w-full px-3 py-2 border border-gray-300 rounded-lg focus:outline-none focus:ring-2 focus:ring-blue-500"
-                                >
-                                    <option value="">-- Chọn --</option>
-                                    {lopmonhocList.map((lmh) => (
-                                        <option key={lmh.lopmh_id} value={lmh.lopmh_id}>
-                                            {lmh.tenkhoa} - {lmh.tenmh}
-                                        </option>
-                                    ))}
-                                </select>
-                            </div>
-                            <div>
-                                <label className="block text-sm font-medium text-gray-700 mb-1">Phòng học *</label>
-                                <select required value={formData.ph_id}
-                                    onChange={(e) => setFormData({ ...formData, ph_id: e.target.value })}
-                                    className="w-full px-3 py-2 border border-gray-300 rounded-lg focus:outline-none focus:ring-2 focus:ring-blue-500"
-                                >
-                                    <option value="">-- Chọn --</option>
-                                    {phonghocList.map((ph) => (
-                                        <option key={ph.ph_id} value={ph.ph_id}>
-                                            {ph.maphong} - {ph.diadiem}
-                                        </option>
-                                    ))}
-                                </select>
-                            </div>
-                        </div>
-                        <div className="flex justify-end gap-2 mt-6">
-                            <button type="button" onClick={resetForm} className="px-4 py-2 bg-gray-200 text-gray-700 rounded-lg hover:bg-gray-300">Hủy</button>
-                            <button type="submit" className="px-4 py-2 bg-blue-600 text-white rounded-lg hover:bg-blue-700">{editingId ? 'Cập nhật' : 'Thêm'}</button>
-                        </div>
-                    </form>
+            {Object.keys(groupedByWeek).length === 0 ? (
+                <div className="bg-white p-6 rounded-lg shadow text-center text-gray-500">
+                    Chưa có lịch học nào
                 </div>
-            )}
+            ) : (
+                Object.keys(groupedByWeek).sort().reverse().map(weekKey => {
+                    const weekData = groupedByWeek[weekKey];
+                    const weekStart = new Date(weekKey);
+                    const weekEnd = new Date(weekStart);
+                    weekEnd.setDate(weekStart.getDate() + 6);
 
-            <div className="bg-white p-6 rounded-lg shadow">
-                <DataTable columns={columns} data={data} onEdit={handleEdit} onDelete={handleDelete} />
-            </div>
+                    return (
+                        <div key={weekKey} className="mb-8 bg-white p-6 rounded-lg shadow">
+                            <h2 className="text-xl font-semibold mb-4 text-blue-600">
+                                Tuần: {weekStart.toLocaleDateString('vi-VN')} - {weekEnd.toLocaleDateString('vi-VN')}
+                            </h2>
+
+                            <div className="overflow-x-auto">
+                                <table className="w-full border-collapse text-sm">
+                                    <thead>
+                                        <tr className="bg-gray-100">
+                                            <th className="border border-gray-300 px-3 py-2 font-semibold text-gray-700 w-24">
+                                                Giờ
+                                            </th>
+                                            {daysOfWeek.map(day => (
+                                                <th key={day} className="border border-gray-300 px-3 py-2 font-semibold text-gray-700">
+                                                    {day}
+                                                </th>
+                                            ))}
+                                        </tr>
+                                    </thead>
+                                    <tbody>
+                                        {timeSlots.map(timeSlot => (
+                                            <tr key={timeSlot}>
+                                                <td className="border border-gray-300 px-3 py-2 font-medium text-center bg-gray-50">
+                                                    {timeSlot}
+                                                </td>
+                                                {daysOfWeek.map((_, dayIndex) => {
+                                                    const cell = getScheduleCell(weekData, dayIndex, timeSlot);
+                                                    return (
+                                                        <td key={dayIndex} className="border border-gray-300 px-2 py-2">
+                                                            {cell ? (
+                                                                <div className="bg-blue-50 p-2 rounded border-l-4 border-blue-500">
+                                                                    <div className="font-semibold text-blue-900">{cell.tenmh}</div>
+                                                                    <div className="text-xs text-gray-600 mt-1">{cell.tenkhoa}</div>
+                                                                    <div className="text-xs text-gray-500 mt-1">
+                                                                        📍 {cell.maphong}
+                                                                    </div>
+                                                                    {cell.giangvien && (
+                                                                        <div className="text-xs text-gray-500 mt-1">
+                                                                            👨‍🏫 {cell.giangvien}
+                                                                        </div>
+                                                                    )}
+                                                                </div>
+                                                            ) : (
+                                                                <div className="text-gray-300 text-center">-</div>
+                                                            )}
+                                                        </td>
+                                                    );
+                                                })}
+                                            </tr>
+                                        ))}
+                                    </tbody>
+                                </table>
+                            </div>
+                        </div>
+                    );
+                })
+            )}
         </div>
     );
 }

@@ -5,10 +5,10 @@ const router = express.Router();
 
 router.get('/stats', async (req, res) => {
     try {
-        const studentCount = await pool.query('SELECT COUNT(*) FROM HOCVIEN');
-        const teacherCount = await pool.query('SELECT COUNT(*) FROM GIANGVIEN');
-        const courseCount = await pool.query('SELECT COUNT(*) FROM KHOADAOTAO');
-        const classCount = await pool.query('SELECT COUNT(*) FROM LOPMONHOC');
+        const studentCount = await pool.query('SELECT COUNT(*) FROM HocVien');
+        const teacherCount = await pool.query('SELECT COUNT(*) FROM GiangVien');
+        const courseCount = await pool.query('SELECT COUNT(*) FROM KhoaDaoTao');
+        const classCount = await pool.query('SELECT COUNT(*) FROM LopMonHoc');
 
         res.json({
             students: parseInt(studentCount.rows[0].count),

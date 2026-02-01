@@ -6,15 +6,25 @@ const router = express.Router();
 router.get('/', async (req, res) => {
     try {
         const result = await pool.query(`
-      SELECT x.*, b.ngayhoc, b.giobd, b.giokt, l.lopmh_id, p.maphong, 
-             m.tenmh, k.tenkhoa
-      FROM xeplich x
-      JOIN buoihoc b ON x.buoihoc_id = b.buoihoc_id
-      JOIN lopmonhoc l ON x.lopmh_id = l.lopmh_id
-      JOIN phonghoc p ON x.ph_id = p.ph_id
-      LEFT JOIN monhoc m ON l.mh_ma = m.mh_ma
-      LEFT JOIN khoadaotao k ON l.kdt_id = k.kdt_id
-      ORDER BY b.ngayhoc DESC
+      SELECT x.BuoiHoc_ID AS buoihoc_id, x.LopMH_ID AS lopmh_id, x.PH_ID AS ph_id,
+             b.NgayHoc AS ngayhoc, 
+             TO_CHAR(b.NgayHoc, 'Day') AS thu,
+             b.GioBD AS giobd, b.GioKt AS giokt, 
+             p.MaPhong AS maphong, 
+             p.DiaDiem AS diadiem,
+             m.TenMH AS tenmh, 
+             k.TenKhoa AS tenkhoa,
+             STRING_AGG(DISTINCT u.HoTen, ', ' ORDER BY u.HoTen) AS giangvien
+       FROM XepLich x
+       JOIN BuoiHoc b ON x.BuoiHoc_ID = b.BuoiHoc_ID
+       JOIN LopMonHoc l ON x.LopMH_ID = l.LopMH_ID
+       JOIN PhongHoc p ON x.PH_ID = p.PH_ID
+       LEFT JOIN MonHoc m ON l.MH_MA = m.MH_MA
+       LEFT JOIN KhoaDaoTao k ON l.KDT_ID = k.KDT_ID
+       LEFT JOIN PhanCong pc ON pc.LopMH_ID = l.LopMH_ID
+       LEFT JOIN "User" u ON u.USER_ID = pc.GV_ID
+       GROUP BY x.BuoiHoc_ID, x.LopMH_ID, x.PH_ID, b.NgayHoc, b.GioBD, b.GioKt, p.MaPhong, p.DiaDiem, m.TenMH, k.TenKhoa
+       ORDER BY b.NgayHoc, b.GioBD
     `);
         res.json(result.rows);
     } catch (error) {
@@ -26,7 +36,7 @@ router.post('/', async (req, res) => {
     try {
         const { buoihoc_id, lopmh_id, ph_id } = req.body;
         const result = await pool.query(
-            'INSERT INTO xeplich (buoihoc_id, lopmh_id, ph_id) VALUES ($1, $2, $3) RETURNING *',
+            'INSERT INTO XepLich (BuoiHoc_ID, LopMH_ID, PH_ID) VALUES ($1, $2, $3) RETURNING BuoiHoc_ID AS buoihoc_id, LopMH_ID AS lopmh_id, PH_ID AS ph_id',
             [buoihoc_id, lopmh_id, ph_id]
         );
         res.status(201).json(result.rows[0]);
@@ -40,7 +50,7 @@ router.put('/:buoihoc_id', async (req, res) => {
         const { buoihoc_id } = req.params;
         const { lopmh_id, ph_id } = req.body;
         const result = await pool.query(
-            'UPDATE xeplich SET lopmh_id = $1, ph_id = $2 WHERE buoihoc_id = $3 RETURNING *',
+            'UPDATE XepLich SET LopMH_ID = $1, PH_ID = $2 WHERE BuoiHoc_ID = $3 RETURNING BuoiHoc_ID AS buoihoc_id, LopMH_ID AS lopmh_id, PH_ID AS ph_id',
             [lopmh_id, ph_id, buoihoc_id]
         );
         res.json(result.rows[0]);
@@ -52,7 +62,7 @@ router.put('/:buoihoc_id', async (req, res) => {
 router.delete('/:buoihoc_id', async (req, res) => {
     try {
         const { buoihoc_id } = req.params;
-        const result = await pool.query('DELETE FROM xeplich WHERE buoihoc_id = $1 RETURNING *', [buoihoc_id]);
+        const result = await pool.query('DELETE FROM XepLich WHERE BuoiHoc_ID = $1 RETURNING BuoiHoc_ID AS buoihoc_id', [buoihoc_id]);
         res.json({ message: 'Xóa thành công', data: result.rows[0] });
     } catch (error) {
         res.status(500).json({ error: error.message });

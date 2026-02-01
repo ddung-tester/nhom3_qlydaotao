@@ -37,24 +37,20 @@ export default function TeacherPayroll() {
                                 <thead className="bg-gray-100">
                                     <tr>
                                         <th className="px-6 py-3 text-left text-xs font-medium text-gray-700 uppercase tracking-wider border-b">Giảng viên</th>
-                                        <th className="px-6 py-3 text-left text-xs font-medium text-gray-700 uppercase tracking-wider border-b">Email</th>
-                                        <th className="px-6 py-3 text-left text-xs font-medium text-gray-700 uppercase tracking-wider border-b">Chuyên môn</th>
-                                        <th className="px-6 py-3 text-left text-xs font-medium text-gray-700 uppercase tracking-wider border-b">Vai trò</th>
-                                        <th className="px-6 py-3 text-left text-xs font-medium text-gray-700 uppercase tracking-wider border-b">Tổng giờ</th>
-                                        <th className="px-6 py-3 text-left text-xs font-medium text-gray-700 uppercase tracking-wider border-b">Lương dự tính</th>
+                                        <th className="px-6 py-3 text-left text-xs font-medium text-gray-700 uppercase tracking-wider border-b">Giờ giảng viên</th>
+                                        <th className="px-6 py-3 text-left text-xs font-medium text-gray-700 uppercase tracking-wider border-b">Giờ trợ giảng</th>
                                         <th className="px-6 py-3 text-left text-xs font-medium text-gray-700 uppercase tracking-wider border-b">Tổng lương</th>
                                     </tr>
                                 </thead>
                                 <tbody className="divide-y divide-gray-200">
                                     {data.map((row, idx) => (
                                         <tr key={idx} className="hover:bg-gray-50 transition">
-                                            <td className="px-6 py-4 text-sm text-gray-900">{row.ten_gv}</td>
-                                            <td className="px-6 py-4 text-sm text-gray-900">{row.email}</td>
-                                            <td className="px-6 py-4 text-sm text-gray-900">{row.chuyenmon}</td>
-                                            <td className="px-6 py-4 text-sm text-gray-900">{row.vaitro}</td>
-                                            <td className="px-6 py-4 text-sm text-gray-900">{row.tong_gio}</td>
-                                            <td className="px-6 py-4 text-sm text-gray-900">{new Intl.NumberFormat('vi-VN').format(row.luong)} VNĐ</td>
-                                            <td className="px-6 py-4 text-sm text-gray-900 font-bold text-blue-600">{new Intl.NumberFormat('vi-VN').format(row.tong_luong_gv)} VNĐ</td>
+                                            <td className="px-6 py-4 text-sm text-gray-900">{row.hoten}</td>
+                                            <td className="px-6 py-4 text-sm text-gray-900">{row.gio_giang_vien} giờ</td>
+                                            <td className="px-6 py-4 text-sm text-gray-900">{row.gio_tro_giang} giờ</td>
+                                            <td className="px-6 py-4 text-sm text-gray-900 font-bold text-blue-600">
+                                                {new Intl.NumberFormat('vi-VN').format(row.tong_luong)} VNĐ
+                                            </td>
                                         </tr>
                                     ))}
                                 </tbody>
@@ -62,8 +58,8 @@ export default function TeacherPayroll() {
                         </div>
                         <div className="mt-4 text-right">
                             <p className="text-lg font-bold text-blue-600">
-                                Tổng chi dự kiến: {new Intl.NumberFormat('vi-VN').format(
-                                    data.reduce((sum, row) => sum + parseFloat(row.luong || 0), 0)
+                                Tổng chi lương: {new Intl.NumberFormat('vi-VN').format(
+                                    data.reduce((sum, row) => sum + parseFloat(row.tong_luong || 0), 0)
                                 )} VNĐ
                             </p>
                         </div>

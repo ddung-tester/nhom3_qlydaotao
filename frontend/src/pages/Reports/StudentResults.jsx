@@ -26,10 +26,14 @@ export default function StudentResults() {
 
     const columns = [
         { label: 'Học viên', field: 'hoten' },
-        { label: 'Email', field: 'email' },
-        { label: 'Khóa', field: 'tenkhoa' },
-        { label: 'Môn học', field: 'tenmh' },
-        { label: 'Điểm cao nhất', field: 'diem_cao_nhat' }
+        { label: 'Chương trình', field: 'tenct' },
+        { label: 'Khóa đào tạo', field: 'tenkhoa' },
+        { label: 'Học kỳ', field: 'hocky' },
+        { label: 'Năm', field: 'nam' },
+        { label: 'Mã MH', field: 'mh_ma' },
+        { label: 'Tên môn học', field: 'tenmh' },
+        { label: 'Điểm cao nhất', field: 'diem_cao_nhat' },
+        { label: 'Điểm TB khóa', field: 'diem_tb_khoa' }
     ];
 
     if (loading) return <div className="text-center py-8">Đang tải...</div>;

@@ -5,7 +5,7 @@ const router = express.Router();
 
 router.get('/', async (req, res) => {
     try {
-        const result = await pool.query('SELECT * FROM phonghoc ORDER BY ph_id');
+        const result = await pool.query('SELECT PH_ID AS ph_id, DiaDiem AS diadiem, MaPhong AS maphong FROM PhongHoc ORDER BY PH_ID');
         res.json(result.rows);
     } catch (error) {
         res.status(500).json({ error: error.message });
@@ -15,7 +15,7 @@ router.get('/', async (req, res) => {
 router.get('/:id', async (req, res) => {
     try {
         const { id } = req.params;
-        const result = await pool.query('SELECT * FROM phonghoc WHERE ph_id = $1', [id]);
+        const result = await pool.query('SELECT PH_ID AS ph_id, DiaDiem AS diadiem, MaPhong AS maphong FROM PhongHoc WHERE PH_ID = $1', [id]);
         if (result.rows.length === 0) return res.status(404).json({ error: 'Không tìm thấy' });
         res.json(result.rows[0]);
     } catch (error) {
@@ -27,11 +27,12 @@ router.post('/', async (req, res) => {
     try {
         const { diadiem, maphong } = req.body;
         const result = await pool.query(
-            'INSERT INTO phonghoc (diadiem, maphong) VALUES ($1, $2) RETURNING *',
+            'INSERT INTO PhongHoc (DiaDiem, MaPhong) VALUES ($1, $2) RETURNING PH_ID AS ph_id, DiaDiem AS diadiem, MaPhong AS maphong',
             [diadiem, maphong]
         );
         res.status(201).json(result.rows[0]);
     } catch (error) {
+        console.error('Lỗi POST /phonghoc:', error);
         res.status(500).json({ error: error.message });
     }
 });
@@ -41,7 +42,7 @@ router.put('/:id', async (req, res) => {
         const { id } = req.params;
         const { diadiem, maphong } = req.body;
         const result = await pool.query(
-            'UPDATE phonghoc SET diadiem = $1, maphong = $2 WHERE ph_id = $3 RETURNING *',
+            'UPDATE PhongHoc SET DiaDiem = $1, MaPhong = $2 WHERE PH_ID = $3 RETURNING PH_ID AS ph_id, DiaDiem AS diadiem, MaPhong AS maphong',
             [diadiem, maphong, id]
         );
         res.json(result.rows[0]);
@@ -53,7 +54,7 @@ router.put('/:id', async (req, res) => {
 router.delete('/:id', async (req, res) => {
     try {
         const { id } = req.params;
-        const result = await pool.query('DELETE FROM phonghoc WHERE ph_id = $1 RETURNING *', [id]);
+        const result = await pool.query('DELETE FROM PhongHoc WHERE PH_ID = $1 RETURNING PH_ID AS ph_id', [id]);
         res.json({ message: 'Xóa thành công', data: result.rows[0] });
     } catch (error) {
         res.status(500).json({ error: error.message });

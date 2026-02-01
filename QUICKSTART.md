@@ -16,7 +16,6 @@ lsof -ti:3000 | xargs kill -9
 ```
 
 ### Module not found
-
 ```bash
 # Cài lại dependencies
 cd backend && npm install
@@ -37,5 +36,4 @@ UPDATE nhanvien SET quanly_id = NULL WHERE user_id = quanly_id;
 ALTER TABLE nhanvien ADD CONSTRAINT no_self_management CHECK (user_id != quanly_id);
 Lưu ý:
 
-Bạn chạy các lệnh này trong pgAdmin Query Tool hoặc terminal psql.
-Sau khi chạy xong, bạn có thể vào trang Quản lý nhân viên để chỉnh sửa: người đầu tiên hãy để trống ô "Quản lý", hệ thống sẽ tự động lưu là NULL.
+Sau khi chạy xong,có thể vào trang Quản lý nhân viên để chỉnh sửa: người đầu tiên hãy để trống ô "Quản lý", hệ thống sẽ tự động lưu là NULL.
