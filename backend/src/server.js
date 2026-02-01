@@ -2,7 +2,7 @@ import express from 'express';
 import cors from 'cors';
 import dotenv from 'dotenv';
 
-// Import routes
+// Import routes (nạp các route)
 import chuongtrinhRoutes from './routes/chuongtrinh.js';
 import monhocRoutes from './routes/monhoc.js';
 import kyhocRoutes from './routes/kyhoc.js';
@@ -25,11 +25,11 @@ dotenv.config();
 const app = express();
 const PORT = process.env.PORT || 5000;
 
-// Middleware
+// Middleware (phần mềm trung gian)
 app.use(cors());
 app.use(express.json());
 
-// Routes
+// Routes (định tuyến)
 app.use('/api/chuongtrinh', chuongtrinhRoutes);
 app.use('/api/monhoc', monhocRoutes);
 app.use('/api/kyhoc', kyhocRoutes);
@@ -47,12 +47,12 @@ app.use('/api/xeplich', xeplichRoutes);
 app.use('/api/reports', reportRoutes);
 app.use('/api/dashboard', dashboardRoutes);
 
-// Health check
+// Health check (kiểm tra trạng thái)
 app.get('/health', (req, res) => {
     res.json({ status: 'OK', message: 'Server đang chạy' });
 });
 
-// Start server
+// Start server (khởi động server)
 app.listen(PORT, () => {
     console.log(`🚀 Server đang chạy tại http://localhost:${PORT}`);
 });

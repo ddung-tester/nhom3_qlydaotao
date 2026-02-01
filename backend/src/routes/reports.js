@@ -4,7 +4,7 @@ import pool from '../db.js';
 const router = express.Router();
 
 // ============================================================================
-// 5.2.2. Student Results (Completed Cohorts Only)
+// 5.2.2. Kết quả học tập của học viên (Chỉ các khóa đã hoàn thành)
 // ============================================================================
 router.get('/student-results', async (req, res) => {
   try {
@@ -59,13 +59,13 @@ router.get('/student-results', async (req, res) => {
     const result = await pool.query(query);
     res.json(result.rows);
   } catch (error) {
-    console.error('Error /reports/student-results:', error);
+    console.error('Lỗi /reports/student-results:', error);
     res.status(500).json({ error: error.message });
   }
 });
 
 // ============================================================================
-// 5.2.3. Incomplete Students with Failing Grades
+// 5.2.3. Danh sách học viên chưa hoàn thành (Có điểm dưới trung bình)
 // ============================================================================
 router.get('/incomplete-students', async (req, res) => {
   try {
@@ -101,13 +101,13 @@ router.get('/incomplete-students', async (req, res) => {
     const result = await pool.query(query);
     res.json(result.rows);
   } catch (error) {
-    console.error('Error /reports/incomplete-students:', error);
+    console.error('Lỗi /reports/incomplete-students:', error);
     res.status(500).json({ error: error.message });
   }
 });
 
 // ============================================================================
-// 5.2.4. Teacher Payroll Calculation
+// 5.2.4. Tính lương giảng viên
 // ============================================================================
 router.get('/teacher-payroll', async (req, res) => {
   try {
@@ -160,7 +160,7 @@ router.get('/teacher-payroll', async (req, res) => {
 });
 
 // ============================================================================
-// 5.2.5. Staff Payroll Calculation
+// 5.2.5. Tính lương nhân viên
 // ============================================================================
 router.get('/staff-payroll', async (req, res) => {
   try {

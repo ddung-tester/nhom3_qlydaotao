@@ -3,6 +3,7 @@ import pool from '../db.js';
 
 const router = express.Router();
 
+// GET - Lấy danh sách buổi học
 router.get('/', async (req, res) => {
     try {
         const result = await pool.query(`
@@ -29,6 +30,7 @@ router.get('/', async (req, res) => {
     }
 });
 
+// GET - Lấy chi tiết buổi học
 router.get('/:id', async (req, res) => {
     try {
         const { id } = req.params;
@@ -46,6 +48,7 @@ router.get('/:id', async (req, res) => {
     }
 });
 
+// POST - Thêm buổi học mới (bao gồm xếp lịch)
 router.post('/', async (req, res) => {
     const client = await pool.connect();
     try {
@@ -77,6 +80,7 @@ router.post('/', async (req, res) => {
     }
 });
 
+// PUT - Cập nhật buổi học
 router.put('/:id', async (req, res) => {
     const client = await pool.connect();
     try {
@@ -111,6 +115,7 @@ router.put('/:id', async (req, res) => {
     }
 });
 
+// DELETE - Xóa buổi học
 router.delete('/:id', async (req, res) => {
     try {
         const { id } = req.params;

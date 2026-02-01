@@ -3,6 +3,7 @@ import pool from '../db.js';
 
 const router = express.Router();
 
+// GET - Lấy danh sách phân công
 router.get('/', async (req, res) => {
     try {
         const result = await pool.query(`
@@ -23,6 +24,7 @@ router.get('/', async (req, res) => {
     }
 });
 
+// POST - Thêm phân công mới
 router.post('/', async (req, res) => {
     try {
         const { gv_id, lopmh_id, vaitro } = req.body;
@@ -36,6 +38,7 @@ router.post('/', async (req, res) => {
     }
 });
 
+// PUT - Cập nhật phân công
 router.put('/:id', async (req, res) => {
     try {
         const { id } = req.params;
@@ -50,6 +53,7 @@ router.put('/:id', async (req, res) => {
     }
 });
 
+// DELETE - Xóa phân công
 router.delete('/:id', async (req, res) => {
     try {
         const { id } = req.params;

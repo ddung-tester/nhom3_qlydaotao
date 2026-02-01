@@ -3,6 +3,7 @@ import pool from '../db.js';
 
 const router = express.Router();
 
+// GET - Lấy thông tin thống kê dashboard
 router.get('/stats', async (req, res) => {
     try {
         const studentCount = await pool.query('SELECT COUNT(*) FROM HocVien');

@@ -3,7 +3,7 @@ import pool from '../db.js';
 
 const router = express.Router();
 
-// GET all kỳ học
+// GET - Lấy tất cả kỳ học
 router.get('/', async (req, res) => {
     try {
         const result = await pool.query('SELECT KY_ID AS ky_id, HocKy AS hocky, Nam AS nam, NgayBatDau AS ngaybatdau, NgayKetThuc AS ngayketthuc FROM KyHoc ORDER BY Nam DESC, HocKy DESC');
@@ -14,7 +14,7 @@ router.get('/', async (req, res) => {
     }
 });
 
-// GET one kỳ học
+// GET - Lấy một kỳ học
 router.get('/:id', async (req, res) => {
     try {
         const { id } = req.params;

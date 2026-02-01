@@ -3,7 +3,7 @@ import pool from '../db.js';
 
 const router = express.Router();
 
-// GET all khóa đào tạo
+// GET - Lấy tất cả khóa đào tạo
 router.get('/', async (req, res) => {
     try {
         const result = await pool.query(`
@@ -21,7 +21,7 @@ router.get('/', async (req, res) => {
     }
 });
 
-// GET one khóa đào tạo
+// GET - Lấy một khóa đào tạo
 router.get('/:id', async (req, res) => {
     try {
         const { id } = req.params;

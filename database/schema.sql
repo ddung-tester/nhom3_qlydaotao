@@ -51,7 +51,7 @@ CREATE TABLE GiangVien (
   FOREIGN KEY (USER_ID) REFERENCES "User"(USER_ID) ON DELETE CASCADE
 );
 
--- 4.4.5. NhanVien (self-FK, QuanLy_ID NOT NULL)
+-- 4.4.5. NhanVien (khóa ngoại tự tham chiếu, QuanLy_ID NOT NULL)
 CREATE TABLE NhanVien (
   USER_ID     INT PRIMARY KEY,
   NgayVaoLam  DATE,

@@ -3,6 +3,7 @@ import pool from '../db.js';
 
 const router = express.Router();
 
+// GET - Lấy danh sách điểm thi
 router.get('/', async (req, res) => {
     try {
         const result = await pool.query(`
@@ -22,6 +23,7 @@ router.get('/', async (req, res) => {
     }
 });
 
+// POST - Nhập điểm thi mới
 router.post('/', async (req, res) => {
     try {
         const { hv_id, lopmh_id, lanthi, diem, ngaythi } = req.body;
@@ -35,6 +37,7 @@ router.post('/', async (req, res) => {
     }
 });
 
+// PUT - Cập nhật điểm thi
 router.put('/:hv_id/:lopmh_id/:lanthi', async (req, res) => {
     try {
         const { hv_id, lopmh_id, lanthi } = req.params;
@@ -49,6 +52,7 @@ router.put('/:hv_id/:lopmh_id/:lanthi', async (req, res) => {
     }
 });
 
+// DELETE - Xóa điểm thi
 router.delete('/:hv_id/:lopmh_id/:lanthi', async (req, res) => {
     try {
         const { hv_id, lopmh_id, lanthi } = req.params;

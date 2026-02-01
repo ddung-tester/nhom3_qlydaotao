@@ -4,7 +4,7 @@ import pool from '../db.js';
 const router = express.Router();
 
 // ============================================================================
-// 5.2.1. CRUD operations for MonHoc
+// 5.2.1. Các thao tác CRUD cho MonHoc
 // ============================================================================
 
 // 1. Thêm (Insert)
@@ -63,7 +63,7 @@ router.put('/:ma', async (req, res) => {
         const { ma } = req.params;
         const { sogio, tenmh, ct_id } = req.body;
 
-        // We can update multiple fields, but section 5.2.1-3 focuses on SoGio
+        // Có thể cập nhật nhiều trường, nhưng phần 5.2.1-3 tập trung vào SoGio
         const query = `
             UPDATE MonHoc
             SET SoGio = COALESCE($1, SoGio),
@@ -101,7 +101,7 @@ router.delete('/:ma', async (req, res) => {
     }
 });
 
-// Helper for specific module detail
+// Lấy thông tin chi tiết môn học
 router.get('/:ma', async (req, res) => {
     try {
         const { ma } = req.params;

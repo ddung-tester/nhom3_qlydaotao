@@ -3,6 +3,7 @@ import pool from '../db.js';
 
 const router = express.Router();
 
+// GET - Lấy danh sách đăng ký khóa
 router.get('/', async (req, res) => {
     try {
         const result = await pool.query(`
@@ -20,6 +21,7 @@ router.get('/', async (req, res) => {
     }
 });
 
+// POST - Đăng ký khóa mới
 router.post('/', async (req, res) => {
     try {
         const { hv_id, kdt_id, ngaydk, trangthai } = req.body;
@@ -33,6 +35,7 @@ router.post('/', async (req, res) => {
     }
 });
 
+// PUT - Cập nhật thông tin đăng ký
 router.put('/:hv_id/:kdt_id', async (req, res) => {
     try {
         const { hv_id, kdt_id } = req.params;
@@ -47,6 +50,7 @@ router.put('/:hv_id/:kdt_id', async (req, res) => {
     }
 });
 
+// DELETE - Xóa đăng ký khóa
 router.delete('/:hv_id/:kdt_id', async (req, res) => {
     try {
         const { hv_id, kdt_id } = req.params;

@@ -3,6 +3,7 @@ import pool from '../db.js';
 
 const router = express.Router();
 
+// GET - Lấy danh sách xếp lịch học
 router.get('/', async (req, res) => {
     try {
         const result = await pool.query(`
@@ -32,6 +33,7 @@ router.get('/', async (req, res) => {
     }
 });
 
+// POST - Thêm xếp lịch mới
 router.post('/', async (req, res) => {
     try {
         const { buoihoc_id, lopmh_id, ph_id } = req.body;
@@ -45,6 +47,7 @@ router.post('/', async (req, res) => {
     }
 });
 
+// PUT - Cập nhật xếp lịch
 router.put('/:buoihoc_id', async (req, res) => {
     try {
         const { buoihoc_id } = req.params;
@@ -59,6 +62,7 @@ router.put('/:buoihoc_id', async (req, res) => {
     }
 });
 
+// DELETE - Xóa xếp lịch
 router.delete('/:buoihoc_id', async (req, res) => {
     try {
         const { buoihoc_id } = req.params;
