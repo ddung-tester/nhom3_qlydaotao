@@ -14,14 +14,17 @@ router.get('/', async (req, res) => {
                 bh.GioKt AS giokt,
                 mh.TenMH AS tenmh,
                 mh.MH_MA AS mh_ma,
+                ph.MaPhong AS maphong,
+                ph.DiaDiem AS diadiem,
                 STRING_AGG(DISTINCT u.HoTen || ' (' || pc.VaiTro || ')', ', ' ORDER BY u.HoTen || ' (' || pc.VaiTro || ')') AS giangvien
             FROM BuoiHoc bh
             LEFT JOIN XepLich xl ON xl.BuoiHoc_ID = bh.BuoiHoc_ID
             LEFT JOIN LopMonHoc lm ON lm.LopMH_ID = xl.LopMH_ID
             LEFT JOIN MonHoc mh ON mh.MH_MA = lm.MH_MA
+            LEFT JOIN PhongHoc ph ON ph.PH_ID = xl.PH_ID
             LEFT JOIN PhanCong pc ON pc.LopMH_ID = lm.LopMH_ID
             LEFT JOIN "User" u ON u.USER_ID = pc.GV_ID
-            GROUP BY bh.BuoiHoc_ID, bh.NgayHoc, bh.GioBD, bh.GioKt, mh.TenMH, mh.MH_MA
+            GROUP BY bh.BuoiHoc_ID, bh.NgayHoc, bh.GioBD, bh.GioKt, mh.TenMH, mh.MH_MA, ph.MaPhong, ph.DiaDiem
             ORDER BY bh.NgayHoc DESC, bh.GioBD
         `);
         res.json(result.rows);

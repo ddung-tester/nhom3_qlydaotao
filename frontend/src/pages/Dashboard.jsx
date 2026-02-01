@@ -31,60 +31,61 @@ export default function Dashboard() {
         <div>
             <h1 className="text-3xl font-bold text-gray-800 mb-6">Trang chủ</h1>
 
-            <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-4 gap-6 mb-8">
-                <div className="bg-white p-6 rounded-lg shadow">
+            <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-4 gap-8 mb-12">
+                <div className="bg-white p-8 rounded-2xl shadow-sm border border-gray-100 hover:shadow-md transition-all hover:-translate-y-1">
                     <div className="flex items-center justify-between">
                         <div>
-                            <p className="text-gray-500 text-sm">Học viên</p>
-                            <p className="text-2xl font-bold text-gray-800">
+                            <p className="text-gray-400 text-xs font-bold uppercase tracking-wider mb-1">Học viên</p>
+                            <p className="text-3xl font-extrabold text-gray-800">
                                 {loading ? '...' : stats.students}
                             </p>
                         </div>
-                        <div className="text-4xl">👨‍🎓</div>
+                        <div className="text-4xl bg-blue-50 p-3 rounded-xl">👨‍🎓</div>
                     </div>
                 </div>
 
-                <div className="bg-white p-6 rounded-lg shadow">
+                <div className="bg-white p-8 rounded-2xl shadow-sm border border-gray-100 hover:shadow-md transition-all hover:-translate-y-1">
                     <div className="flex items-center justify-between">
                         <div>
-                            <p className="text-gray-500 text-sm">Giảng viên</p>
-                            <p className="text-2xl font-bold text-gray-800">
+                            <p className="text-gray-400 text-xs font-bold uppercase tracking-wider mb-1">Giảng viên</p>
+                            <p className="text-3xl font-extrabold text-gray-800">
                                 {loading ? '...' : stats.teachers}
                             </p>
                         </div>
-                        <div className="text-4xl">👨‍🏫</div>
+                        <div className="text-4xl bg-green-50 p-3 rounded-xl">👨‍🏫</div>
                     </div>
                 </div>
 
-                <div className="bg-white p-6 rounded-lg shadow">
+                <div className="bg-white p-8 rounded-2xl shadow-sm border border-gray-100 hover:shadow-md transition-all hover:-translate-y-1">
                     <div className="flex items-center justify-between">
                         <div>
-                            <p className="text-gray-500 text-sm">Khóa đào tạo</p>
-                            <p className="text-2xl font-bold text-gray-800">
+                            <p className="text-gray-400 text-xs font-bold uppercase tracking-wider mb-1">Khóa đào tạo</p>
+                            <p className="text-3xl font-extrabold text-gray-800">
                                 {loading ? '...' : stats.courses}
                             </p>
                         </div>
-                        <div className="text-4xl">🎓</div>
+                        <div className="text-4xl bg-purple-50 p-3 rounded-xl">🎓</div>
                     </div>
                 </div>
 
-                <div className="bg-white p-6 rounded-lg shadow">
+                <div className="bg-white p-8 rounded-2xl shadow-sm border border-gray-100 hover:shadow-md transition-all hover:-translate-y-1">
                     <div className="flex items-center justify-between">
                         <div>
-                            <p className="text-gray-500 text-sm">Lớp môn học</p>
-                            <p className="text-2xl font-bold text-gray-800">
+                            <p className="text-gray-400 text-xs font-bold uppercase tracking-wider mb-1">Lớp học</p>
+                            <p className="text-3xl font-extrabold text-gray-800">
                                 {loading ? '...' : stats.classes}
                             </p>
                         </div>
-                        <div className="text-4xl">🏫</div>
+                        <div className="text-4xl bg-orange-50 p-3 rounded-xl">🏫</div>
                     </div>
                 </div>
             </div>
 
-            <div className="bg-white p-6 rounded-lg shadow">
-                <h2 className="text-xl font-semibold text-gray-800 mb-4">Hệ thống Quản lý Trung tâm Đào tạo nhóm 3 - HTTT</h2>
-                <p className="text-gray-600">
-                    Menu bên trái để quản lý các chức năng của hệ thống.
+            <div className="bg-white p-10 rounded-3xl shadow-sm border border-gray-100">
+                <h2 className="text-2xl font-bold text-gray-800 mb-6">Nhóm 3 - Hệ thống Quản lý Trung tâm Đào tạo</h2>
+                <p className="text-gray-500 leading-relaxed max-w-2xl">
+                    Chào mừng bạn quay trở lại. Sử dụng menu điều hướng bên trái để truy cập các chức năng quản lý,
+                    vận hành giảng dạy và báo cáo thống kê.
                 </p>
             </div>
         </div>

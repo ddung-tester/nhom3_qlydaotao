@@ -64,7 +64,7 @@ export default function LopMonHocList() {
     };
 
     const handleDelete = async (row) => {
-        if (window.confirm('Xác nhận xóa lớp môn học?')) {
+        if (window.confirm('Xác nhận xóa lớp học?')) {
             try {
                 await axios.delete(`${API_URL}/lopmonhoc/${row.lopmh_id}`);
                 fetchData();
@@ -90,17 +90,19 @@ export default function LopMonHocList() {
     if (loading) return <div className="text-center py-8">Đang tải...</div>;
 
     return (
-        <div>
-            <div className="flex justify-between items-center mb-6">
-                <h1 className="text-3xl font-bold text-gray-800">Lớp học</h1>
-                <button onClick={() => setShowForm(!showForm)} className="px-4 py-2 bg-blue-600 text-white rounded-lg hover:bg-blue-700">
-                    {showForm ? 'Hủy' : '+ Thêm lớp môn học'}
+        <div className="space-y-8">
+            <div className="flex justify-between items-center bg-white p-6 rounded-2xl shadow-sm border border-gray-100">
+                <h1 className="text-3xl font-extrabold text-gray-800 tracking-tight">Quản lý Lớp học</h1>
+                <button onClick={() => setShowForm(!showForm)} className="px-6 py-3 bg-blue-600 text-white font-bold rounded-xl hover:bg-blue-700 transition shadow-lg shadow-blue-200 active:scale-95">
+                    {showForm ? 'Hủy' : '+ Thêm lớp học'}
                 </button>
             </div>
 
             {showForm && (
-                <div className="bg-white p-6 rounded-lg shadow mb-6">
-                    <h2 className="text-xl font-semibold mb-4">{editingId ? 'Sửa' : 'Thêm mới'}</h2>
+                <div className="bg-white p-10 rounded-2xl shadow-md border border-gray-100 animate-in fade-in slide-in-from-top-4 duration-300">
+                    <h2 className="text-2xl font-bold text-gray-800 mb-8 flex items-center gap-2">
+                        {editingId ? '📝 Cập nhật lớp học' : '✨ Thêm lớp học mới'}
+                    </h2>
                     <form onSubmit={handleSubmit}>
                         <div className="grid grid-cols-1 md:grid-cols-2 gap-4">
                             <div>

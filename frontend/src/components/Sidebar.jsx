@@ -6,7 +6,7 @@ export default function Sidebar() {
     const menuItems = [
         { path: '/', label: 'Trang chủ', icon: '🏠' },
         {
-            label: 'Quản lý',
+            label: 'Quản lý Nhân sự',
             items: [
                 { path: '/hocvien', label: 'Học viên', icon: '👨‍🎓' },
                 { path: '/giangvien', label: 'Giảng viên', icon: '👨‍🏫' },
@@ -14,7 +14,7 @@ export default function Sidebar() {
             ]
         },
         {
-            label: 'Chương trình',
+            label: '📚 CHƯƠNG TRÌNH',
             items: [
                 { path: '/chuongtrinh', label: 'Chương trình đào tạo', icon: '📚' },
                 { path: '/monhoc', label: 'Môn học', icon: '📖' },
@@ -24,19 +24,24 @@ export default function Sidebar() {
             ]
         },
         {
-            label: 'Học vụ',
+            label: '🏢 HẠ TẦNG',
             items: [
-                { path: '/dangkykhoa', label: 'Đăng ký khóa', icon: '📝' },
-                { path: '/diemthi', label: 'Điểm thi', icon: '📊' },
-                { path: '/phancong', label: 'Phân công giảng dạy', icon: '👥' },
+                { path: '/phonghoc', label: 'Phòng học', icon: '🚪' },
             ]
         },
         {
-            label: 'Lịch học',
+            label: '🕒 VẬN HÀNH GIẢNG DẠY',
             items: [
                 { path: '/buoihoc', label: 'Buổi học', icon: '⏰' },
-                { path: '/phonghoc', label: 'Phòng học', icon: '🚪' },
+                { path: '/phancong', label: 'Phân công giảng dạy', icon: '👥' },
                 { path: '/xeplich', label: 'Thời khóa biểu', icon: '📆' },
+            ]
+        },
+        {
+            label: '🎓 HỌC VỤ',
+            items: [
+                { path: '/dangkykhoa', label: 'Đăng ký khóa', icon: '📝' },
+                { path: '/diemthi', label: 'Điểm thi', icon: '📊' },
             ]
         },
         {
@@ -53,38 +58,38 @@ export default function Sidebar() {
     const isActive = (path) => location.pathname === path;
 
     return (
-        <aside className="w-64 bg-white shadow-md h-[calc(100vh-4rem)] overflow-y-auto">
-            <nav className="p-4">
+        <aside className="w-64 bg-white shadow-md h-[calc(100vh-4rem)] overflow-y-auto border-r border-gray-200">
+            <nav className="py-8 px-4">
                 {menuItems.map((section, idx) => (
-                    <div key={idx} className="mb-4">
+                    <div key={idx} className="mb-8">
                         {section.path ? (
                             <Link
                                 to={section.path}
-                                className={`flex items-center gap-2 px-4 py-2 rounded-lg transition ${isActive(section.path)
-                                    ? 'bg-blue-100 text-blue-600 font-semibold'
-                                    : 'text-gray-700 hover:bg-gray-100'
+                                className={`flex items-center gap-3 px-4 py-2.5 rounded-lg transition ${isActive(section.path)
+                                    ? 'bg-blue-50 text-blue-600 font-semibold shadow-sm'
+                                    : 'text-gray-700 hover:bg-gray-50'
                                     }`}
                             >
-                                <span>{section.icon}</span>
-                                <span>{section.label}</span>
+                                <span className="text-xl">{section.icon}</span>
+                                <span className="font-medium">{section.label}</span>
                             </Link>
                         ) : (
                             <>
-                                <h3 className="text-xs font-semibold text-gray-500 uppercase mb-2 px-4">
+                                <h3 className="text-[11px] font-bold text-gray-400 uppercase tracking-wider mb-3 px-4">
                                     {section.label}
                                 </h3>
-                                <div className="space-y-1">
+                                <div className="space-y-1.5">
                                     {section.items.map((item) => (
                                         <Link
                                             key={item.path}
                                             to={item.path}
-                                            className={`flex items-center gap-2 px-4 py-2 rounded-lg transition text-sm ${isActive(item.path)
-                                                ? 'bg-blue-100 text-blue-600 font-semibold'
-                                                : 'text-gray-700 hover:bg-gray-100'
+                                            className={`flex items-center gap-3 px-4 py-2.5 rounded-xl transition text-sm ${isActive(item.path)
+                                                ? 'bg-blue-50 text-blue-600 font-bold shadow-sm'
+                                                : 'text-gray-600 hover:bg-gray-50'
                                                 }`}
                                         >
-                                            <span>{item.icon}</span>
-                                            <span>{item.label}</span>
+                                            <span className="text-lg">{item.icon}</span>
+                                            <span className="font-medium">{item.label}</span>
                                         </Link>
                                     ))}
                                 </div>
