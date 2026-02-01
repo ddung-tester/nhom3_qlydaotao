@@ -41,72 +41,6 @@ qlydaotao/
     └── seed.sql               # Dữ liệu mẫu
 ```
 
-## Hướng dẫn cài đặt và chạy
-
-### Bước 1: Tạo Database
-
-1. Mở PostgreSQL và tạo database mới:
-```sql
-CREATE DATABASE training_center;
-```
-
-2. Kết nối vào database vừa tạo và chạy file schema:
-```bash
-psql -U postgres -d training_center -f database/schema.sql
-```
-
-3. Chạy file seed để tạo dữ liệu mẫu:
-```bash
-psql -U postgres -d training_center -f database/seed.sql
-```
-
-### Bước 2: Cấu hình Backend
-
-1. Di chuyển vào thư mục backend:
-```bash
-cd backend
-```
-
-2. Cài đặt dependencies:
-```bash
-npm install
-```
-
-3. Tạo file `.env` từ `.env.example` và cập nhật thông tin:
-```env
-DB_HOST=localhost
-DB_PORT=5432
-DB_USER=postgres
-DB_PASSWORD=your_password_here
-DB_NAME=training_center
-PORT=5000
-```
-
-4. Chạy backend server:
-```bash
-npm start
-```
-
-Server sẽ chạy tại: `http://localhost:5000`
-
-### Bước 3: Cấu hình Frontend
-
-1. Mở terminal mới, di chuyển vào thư mục frontend:
-```bash
-cd frontend
-```
-
-2. Cài đặt dependencies:
-```bash
-npm install
-```
-
-3. Chạy development server:
-```bash
-npm run dev
-```
-
-Frontend sẽ chạy tại: `http://localhost:3000`
 
 ## Chức năng chính
 
@@ -126,9 +60,7 @@ Frontend sẽ chạy tại: `http://localhost:3000`
 - 📋 **Phòng học** - Quản lý phòng học
 - 📋 **Xếp lịch** - Xếp lịch buổi học vào phòng
 
-**Chú thích:**
-- ✅ Đã implement CRUD đầy đủ với form
-- 📋 Có API backend đầy đủ, frontend dùng stub placeholder (theo pattern tương tự)
+
 
 ### Reports (Báo cáo)
 Tất cả report đều có API backend sẵn sàng tại `/api/reports/*`:
