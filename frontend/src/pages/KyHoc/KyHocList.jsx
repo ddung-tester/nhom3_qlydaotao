@@ -3,6 +3,7 @@
 import { useState, useEffect } from 'react';
 import axios from 'axios';
 import DataTable from '../../components/DataTable';
+import { handleError, handleSuccess } from '../../utils/errorHandler';
 
 const API_URL = 'http://localhost:5000/api';
 
@@ -22,7 +23,7 @@ export default function KyHocList() {
             const res = await axios.get(`${API_URL}/kyhoc`);
             setData(res.data);
         } catch (error) {
-            console.error('Lỗi:', error);
+            handleError(error);
         } finally {
             setLoading(false);
         }
@@ -38,8 +39,9 @@ export default function KyHocList() {
             }
             fetchData();
             resetForm();
+            handleSuccess(editingId ? 'Cập nhật kỳ học thành công!' : 'Thêm kỳ học mới thành công!');
         } catch (error) {
-            alert('Lỗi: ' + (error.response?.data?.error || error.message));
+            handleError(error);
         }
     };
 
@@ -59,8 +61,9 @@ export default function KyHocList() {
             try {
                 await axios.delete(`${API_URL}/kyhoc/${row.ky_id}`);
                 fetchData();
+                handleSuccess('Xóa kỳ học thành công!');
             } catch (error) {
-                alert('Lỗi: ' + (error.response?.data?.error || error.message));
+                handleError(error);
             }
         }
     };

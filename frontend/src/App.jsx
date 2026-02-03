@@ -1,4 +1,6 @@
 import { BrowserRouter as Router, Routes, Route } from 'react-router-dom';
+import { ToastContainer } from 'react-toastify';
+import 'react-toastify/dist/ReactToastify.css';
 import Layout from './components/Layout';
 import Dashboard from './pages/Dashboard';
 import HocVienList from './pages/HocVien/HocVienList';
@@ -22,31 +24,34 @@ import StaffPayroll from './pages/Reports/StaffPayroll';
 
 function App() {
     return (
-        <Router>
-            <Routes>
-                <Route path="/" element={<Layout />}>
-                    <Route index element={<Dashboard />} />
-                    <Route path="hocvien" element={<HocVienList />} />
-                    <Route path="giangvien" element={<GiangVienList />} />
-                    <Route path="nhanvien" element={<NhanVienList />} />
-                    <Route path="chuongtrinh" element={<ChuongTrinhList />} />
-                    <Route path="monhoc" element={<MonHocList />} />
-                    <Route path="kyhoc" element={<KyHocList />} />
-                    <Route path="khoadaotao" element={<KhoaDaoTaoList />} />
-                    <Route path="lopmonhoc" element={<LopMonHocList />} />
-                    <Route path="dangkykhoa" element={<DangKyKhoaList />} />
-                    <Route path="diemthi" element={<DiemThiList />} />
-                    <Route path="phancong" element={<PhanCongList />} />
-                    <Route path="buoihoc" element={<BuoiHocList />} />
-                    <Route path="phonghoc" element={<PhongHocList />} />
-                    <Route path="xeplich" element={<XepLichList />} />
-                    <Route path="reports/student-results" element={<StudentResults />} />
-                    <Route path="reports/incomplete-students" element={<IncompleteStudents />} />
-                    <Route path="reports/teacher-payroll" element={<TeacherPayroll />} />
-                    <Route path="reports/staff-payroll" element={<StaffPayroll />} />
-                </Route>
-            </Routes>
-        </Router>
+        <>
+            <Router>
+                <Routes>
+                    <Route path="/" element={<Layout />}>
+                        <Route index element={<Dashboard />} />
+                        <Route path="hocvien" element={<HocVienList />} />
+                        <Route path="giangvien" element={<GiangVienList />} />
+                        <Route path="nhanvien" element={<NhanVienList />} />
+                        <Route path="chuongtrinh" element={<ChuongTrinhList />} />
+                        <Route path="monhoc" element={<MonHocList />} />
+                        <Route path="kyhoc" element={<KyHocList />} />
+                        <Route path="khoadaotao" element={<KhoaDaoTaoList />} />
+                        <Route path="lopmonhoc" element={<LopMonHocList />} />
+                        <Route path="dangkykhoa" element={<DangKyKhoaList />} />
+                        <Route path="diemthi" element={<DiemThiList />} />
+                        <Route path="phancong" element={<PhanCongList />} />
+                        <Route path="buoihoc" element={<BuoiHocList />} />
+                        <Route path="phonghoc" element={<PhongHocList />} />
+                        <Route path="xeplich" element={<XepLichList />} />
+                        <Route path="reports/student-results" element={<StudentResults />} />
+                        <Route path="reports/incomplete-students" element={<IncompleteStudents />} />
+                        <Route path="reports/teacher-payroll" element={<TeacherPayroll />} />
+                        <Route path="reports/staff-payroll" element={<StaffPayroll />} />
+                    </Route>
+                </Routes>
+            </Router>
+            <ToastContainer />
+        </>
     );
 }
 

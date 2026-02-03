@@ -1,6 +1,7 @@
 import { useState, useEffect } from 'react';
 import axios from 'axios';
 import DataTable from '../../components/DataTable';
+import { handleError, handleSuccess } from '../../utils/errorHandler';
 
 const API_URL = 'http://localhost:5000/api';
 
@@ -38,7 +39,7 @@ export default function DiemThiList() {
             setHocvienList(hv.data);
             setLopmonhocList(lmh.data);
         } catch (error) {
-            console.error('Lỗi:', error);
+            handleError(error);
         }
     };
 
@@ -52,8 +53,9 @@ export default function DiemThiList() {
             }
             fetchData();
             resetForm();
+            handleSuccess(editingIds ? 'Cập nhật điểm thi thành công!' : 'Thêm điểm thi mới thành công!');
         } catch (error) {
-            alert('Lỗi: ' + (error.response?.data?.error || error.message));
+            handleError(error);
         }
     };
 
@@ -74,8 +76,9 @@ export default function DiemThiList() {
             try {
                 await axios.delete(`${API_URL}/diemthi/${row.hv_id}/${row.lopmh_id}/${row.lanthi}`);
                 fetchData();
+                handleSuccess('Xóa điểm thi thành công!');
             } catch (error) {
-                alert('Lỗi: ' + (error.response?.data?.error || error.message));
+                handleError(error);
             }
         }
     };

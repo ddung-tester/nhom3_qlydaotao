@@ -1,6 +1,7 @@
 import { useState, useEffect } from 'react';
 import axios from 'axios';
 import DataTable from '../../components/DataTable';
+import { handleError, handleSuccess } from '../../utils/errorHandler';
 
 const API_URL = 'http://localhost:5000/api';
 
@@ -33,7 +34,7 @@ export default function MonHocList() {
             const res = await axios.get(`${API_URL}/chuongtrinh`);
             setChuongtrinhList(res.data);
         } catch (error) {
-            console.error('Lỗi:', error);
+            handleError(error);
         }
     };
 
@@ -47,8 +48,9 @@ export default function MonHocList() {
             }
             fetchData();
             resetForm();
+            handleSuccess(editingId ? 'Cập nhật môn học thành công!' : 'Thêm môn học mới thành công!');
         } catch (error) {
-            alert('Lỗi: ' + (error.response?.data?.error || error.message));
+            handleError(error);
         }
     };
 
@@ -63,8 +65,9 @@ export default function MonHocList() {
             try {
                 await axios.delete(`${API_URL}/monhoc/${row.mh_ma}`);
                 fetchData();
+                handleSuccess('Xóa môn học thành công!');
             } catch (error) {
-                alert('Lỗi: ' + (error.response?.data?.error || error.message));
+                handleError(error);
             }
         }
     };

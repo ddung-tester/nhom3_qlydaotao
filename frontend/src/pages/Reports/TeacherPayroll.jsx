@@ -1,5 +1,6 @@
 import { useState, useEffect } from 'react';
 import axios from 'axios';
+import { handleError } from '../../utils/errorHandler';
 
 const API_URL = 'http://localhost:5000/api';
 
@@ -23,8 +24,7 @@ export default function TeacherPayroll() {
             });
             setData(res.data);
         } catch (error) {
-            console.error('Lỗi:', error);
-            alert('Lỗi: ' + (error.response?.data?.error || error.message));
+            handleError(error);
         } finally {
             setLoading(false);
         }

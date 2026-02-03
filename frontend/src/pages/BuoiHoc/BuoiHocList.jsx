@@ -1,6 +1,7 @@
 import { useState, useEffect } from 'react';
 import axios from 'axios';
 import DataTable from '../../components/DataTable';
+import { handleError, handleSuccess } from '../../utils/errorHandler';
 
 const API_URL = 'http://localhost:5000/api';
 
@@ -44,7 +45,7 @@ export default function BuoiHocList() {
             const res = await axios.get(`${API_URL}/phonghoc`);
             setPhongHocList(res.data);
         } catch (error) {
-            console.error('Lỗi khi tải danh sách phòng học:', error);
+            handleError(error);
         }
     };
 
@@ -53,7 +54,7 @@ export default function BuoiHocList() {
 
         // Kiểm tra: Giờ kết thúc phải lớn hơn giờ bắt đầu
         if (formData.giobd && formData.giokt && formData.giobd >= formData.giokt) {
-            alert('Giờ kết thúc phải lớn hơn giờ bắt đầu!');
+            handleError(new Error('Giờ kết thúc phải lớn hơn giờ bắt đầu!'));
             return;
         }
 
@@ -65,8 +66,9 @@ export default function BuoiHocList() {
             }
             fetchData();
             resetForm();
+            handleSuccess(editingId ? 'Cập nhật buổi học thành công!' : 'Thêm buổi học mới thành công!');
         } catch (error) {
-            alert('Lỗi: ' + (error.response?.data?.error || error.message));
+            handleError(error);
         }
     };
 
@@ -87,8 +89,9 @@ export default function BuoiHocList() {
             try {
                 await axios.delete(`${API_URL}/buoihoc/${row.buoihoc_id}`);
                 fetchData();
+                handleSuccess('Xóa buổi học thành công!');
             } catch (error) {
-                alert('Lỗi: ' + (error.response?.data?.error || error.message));
+                handleError(error);
             }
         }
     };

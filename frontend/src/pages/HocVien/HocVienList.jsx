@@ -1,6 +1,7 @@
 import { useState, useEffect } from 'react';
 import axios from 'axios';
 import DataTable from '../../components/DataTable';
+import { handleError, handleSuccess } from '../../utils/errorHandler';
 
 const API_URL = 'http://localhost:5000/api';
 
@@ -26,7 +27,7 @@ export default function HocVienList() {
             const res = await axios.get(`${API_URL}/hocvien`);
             setData(res.data);
         } catch (error) {
-            console.error('Lỗi khi tải dữ liệu:', error);
+            handleError(error);
         } finally {
             setLoading(false);
         }
@@ -48,9 +49,9 @@ export default function HocVienList() {
             }
             fetchData();
             resetForm();
+            handleSuccess(editingId ? 'Cập nhật học viên thành công!' : 'Thêm học viên mới thành công!');
         } catch (error) {
-            console.error('Lỗi khi lưu:', error);
-            alert('Có lỗi xảy ra: ' + (error.response?.data?.error || error.message));
+            handleError(error);
         }
     };
 
@@ -71,9 +72,9 @@ export default function HocVienList() {
             try {
                 await axios.delete(`${API_URL}/hocvien/${row.user_id}`);
                 fetchData();
+                handleSuccess('Xóa học viên thành công!');
             } catch (error) {
-                console.error('Lỗi khi xóa:', error);
-                alert('Có lỗi xảy ra: ' + (error.response?.data?.error || error.message));
+                handleError(error);
             }
         }
     };

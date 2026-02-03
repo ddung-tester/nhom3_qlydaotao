@@ -1,5 +1,6 @@
 import { useState, useEffect } from 'react';
 import axios from 'axios';
+import { handleError } from '../../utils/errorHandler';
 import DataTable from '../../components/DataTable';
 
 const API_URL = 'http://localhost:5000/api';
@@ -31,7 +32,7 @@ export default function StaffPayroll() {
             });
             setData(res.data.data || []);
         } catch (error) {
-            console.error('Lỗi API Payroll:', error);
+            handleError(error);
             setError(error.response?.data?.details || error.message);
             setData([]);
         } finally {

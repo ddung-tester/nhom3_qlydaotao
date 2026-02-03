@@ -1,5 +1,6 @@
 import { useState, useEffect } from 'react';
 import axios from 'axios';
+import { handleError } from '../../utils/errorHandler';
 
 const API_URL = 'http://localhost:5000/api';
 
@@ -16,7 +17,7 @@ export default function XepLichList() {
             const res = await axios.get(`${API_URL}/xeplich`);
             setData(res.data);
         } catch (error) {
-            console.error('Lỗi:', error);
+            handleError(error);
         } finally {
             setLoading(false);
         }

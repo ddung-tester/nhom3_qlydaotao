@@ -1,6 +1,7 @@
 import { useState, useEffect } from 'react';
 import axios from 'axios';
 import DataTable from '../../components/DataTable';
+import { handleError, handleSuccess } from '../../utils/errorHandler';
 
 const API_URL = 'http://localhost:5000/api';
 
@@ -29,7 +30,7 @@ export default function NhanVienList() {
             setData(res.data);
             setNhanvienList(res.data);
         } catch (error) {
-            console.error('Lỗi:', error);
+            handleError(error);
         } finally {
             setLoading(false);
         }
@@ -49,8 +50,9 @@ export default function NhanVienList() {
             }
             fetchData();
             resetForm();
+            handleSuccess(editingId ? 'Cập nhật nhân viên thành công!' : 'Thêm nhân viên mới thành công!');
         } catch (error) {
-            alert('Lỗi: ' + (error.response?.data?.error || error.message));
+            handleError(error);
         }
     };
 
@@ -72,8 +74,9 @@ export default function NhanVienList() {
             try {
                 await axios.delete(`${API_URL}/nhanvien/${row.user_id}`);
                 fetchData();
+                handleSuccess('Xóa nhân viên thành công!');
             } catch (error) {
-                alert('Lỗi: ' + (error.response?.data?.error || error.message));
+                handleError(error);
             }
         }
     };

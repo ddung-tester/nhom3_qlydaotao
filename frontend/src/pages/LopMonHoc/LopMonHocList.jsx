@@ -1,6 +1,7 @@
 import { useState, useEffect } from 'react';
 import axios from 'axios';
 import DataTable from '../../components/DataTable';
+import { handleError, handleSuccess } from '../../utils/errorHandler';
 
 const API_URL = 'http://localhost:5000/api';
 
@@ -38,7 +39,7 @@ export default function LopMonHocList() {
             setKhoadaotaoList(kdt.data);
             setMonhocList(mh.data);
         } catch (error) {
-            console.error('Lỗi:', error);
+            handleError(error);
         }
     };
 
@@ -52,8 +53,9 @@ export default function LopMonHocList() {
             }
             fetchData();
             resetForm();
+            handleSuccess(editingId ? 'Cập nhật lớp học thành công!' : 'Thêm lớp học mới thành công!');
         } catch (error) {
-            alert('Lỗi: ' + (error.response?.data?.error || error.message));
+            handleError(error);
         }
     };
 
@@ -68,8 +70,9 @@ export default function LopMonHocList() {
             try {
                 await axios.delete(`${API_URL}/lopmonhoc/${row.lopmh_id}`);
                 fetchData();
+                handleSuccess('Xóa lớp học thành công!');
             } catch (error) {
-                alert('Lỗi: ' + (error.response?.data?.error || error.message));
+                handleError(error);
             }
         }
     };

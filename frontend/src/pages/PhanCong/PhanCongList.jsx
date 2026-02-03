@@ -1,6 +1,7 @@
 import { useState, useEffect } from 'react';
 import axios from 'axios';
 import DataTable from '../../components/DataTable';
+import { handleError, handleSuccess } from '../../utils/errorHandler';
 
 const API_URL = 'http://localhost:5000/api';
 
@@ -38,7 +39,7 @@ export default function PhanCongList() {
             setGiangvienList(gv.data);
             setLopmonhocList(lmh.data);
         } catch (error) {
-            console.error('Lỗi:', error);
+            handleError(error);
         }
     };
 
@@ -52,8 +53,9 @@ export default function PhanCongList() {
             }
             fetchData();
             resetForm();
+            handleSuccess(editingId ? 'Cập nhật phân công thành công!' : 'Thêm phân công mới thành công!');
         } catch (error) {
-            alert('Lỗi: ' + (error.response?.data?.error || error.message));
+            handleError(error);
         }
     };
 
@@ -68,8 +70,9 @@ export default function PhanCongList() {
             try {
                 await axios.delete(`${API_URL}/phancong/${row.pc_id}`);
                 fetchData();
+                handleSuccess('Xóa phân công thành công!');
             } catch (error) {
-                alert('Lỗi: ' + (error.response?.data?.error || error.message));
+                handleError(error);
             }
         }
     };

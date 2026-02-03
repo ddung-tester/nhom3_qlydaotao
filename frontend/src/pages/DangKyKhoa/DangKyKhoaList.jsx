@@ -1,6 +1,7 @@
 import { useState, useEffect } from 'react';
 import axios from 'axios';
 import DataTable from '../../components/DataTable';
+import { handleError, handleSuccess } from '../../utils/errorHandler';
 
 const API_URL = 'http://localhost:5000/api';
 
@@ -38,7 +39,7 @@ export default function DangKyKhoaList() {
             setHocvienList(hv.data);
             setKhoadaotaoList(kdt.data);
         } catch (error) {
-            console.error('Lỗi:', error);
+            handleError(error);
         }
     };
 
@@ -52,8 +53,9 @@ export default function DangKyKhoaList() {
             }
             fetchData();
             resetForm();
+            handleSuccess(editingIds ? 'Cập nhật đăng ký thành công!' : 'Thêm đăng ký mới thành công!');
         } catch (error) {
-            alert('Lỗi: ' + (error.response?.data?.error || error.message));
+            handleError(error);
         }
     };
 
@@ -73,8 +75,9 @@ export default function DangKyKhoaList() {
             try {
                 await axios.delete(`${API_URL}/dangkykhoa/${row.hv_id}/${row.kdt_id}`);
                 fetchData();
+                handleSuccess('Xóa đăng ký thành công!');
             } catch (error) {
-                alert('Lỗi: ' + (error.response?.data?.error || error.message));
+                handleError(error);
             }
         }
     };

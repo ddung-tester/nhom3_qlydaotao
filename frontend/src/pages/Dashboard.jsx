@@ -1,4 +1,5 @@
 import { useState, useEffect } from 'react';
+import { handleError } from '../utils/errorHandler';
 
 export default function Dashboard() {
     const [stats, setStats] = useState({
@@ -18,7 +19,7 @@ export default function Dashboard() {
                     setStats(data);
                 }
             } catch (error) {
-                console.error('Lỗi khi lấy dữ liệu dashboard:', error);
+                handleError(error);
             } finally {
                 setLoading(false);
             }
@@ -83,10 +84,16 @@ export default function Dashboard() {
 
             <div className="bg-white p-10 rounded-3xl shadow-sm border border-gray-100">
                 <h2 className="text-2xl font-bold text-gray-800 mb-6">Nhóm 3 - Hệ thống Quản lý Trung tâm Đào tạo</h2>
-                <p className="text-gray-500 leading-relaxed max-w-2xl">
-                    Chào mừng bạn quay trở lại. Sử dụng menu điều hướng bên trái để truy cập các chức năng quản lý,
-                    vận hành giảng dạy và báo cáo thống kê.
-                </p>
+                <div className="text-gray-600 space-y-2 mt-4 text-sm">
+                    <p className="font-semibold text-gray-800 text-base mb-2">🔰 Hướng dẫn luồng nghiệp vụ hệ thống:</p>
+                    <ul className="list-disc pl-5 space-y-1">
+                        <li><span className="font-medium text-blue-700">Step 1 - Thiết lập dữ liệu:</span> Quản lý <b>Môn học, Chương trình</b>, <b>Phòng học</b> và <b>Nhân sự</b> (Giảng viên, Nhân viên).</li>
+                        <li><span className="font-medium text-blue-700">Step 2 - Tổ chức đào tạo:</span> Tạo <b>Khóa đào tạo</b>, <b>Kỳ học</b> và mở các <b>Lớp học</b>.</li>
+                        <li><span className="font-medium text-blue-700">Step 3 - Điều phối & Vận hành:</span> Thực hiện <b>Phân công giảng dạy</b> và <b>Xếp lịch học - Buổi học</b> cho các lớp.</li>
+                        <li><span className="font-medium text-blue-700">Step 4 - Quản lý Học viên:</span> Tiếp nhận <b>Học viên</b> và xử lý <b>Đăng ký khóa học</b>.</li>
+                        <li><span className="font-medium text-blue-700">Step 5 - Đánh giá:</span> Cập nhật <b>Điểm thi</b> và xem <b>Báo cáo</b> (Kết quả, Lương).</li>
+                    </ul>
+                </div>
             </div>
         </div>
     );

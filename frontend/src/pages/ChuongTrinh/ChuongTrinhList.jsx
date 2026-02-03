@@ -2,6 +2,7 @@
 import { useState, useEffect } from 'react';
 import axios from 'axios';
 import DataTable from '../../components/DataTable';
+import { handleError, handleSuccess } from '../../utils/errorHandler';
 
 const API_URL = 'http://localhost:5000/api';
 
@@ -34,7 +35,7 @@ export default function ChuongTrinhList() {
             const res = await axios.get(`${API_URL}/nhanvien`);
             setNhanvienList(res.data);
         } catch (error) {
-            console.error('Lỗi:', error);
+            handleError(error);
         }
     };
 
@@ -48,8 +49,9 @@ export default function ChuongTrinhList() {
             }
             fetchData();
             resetForm();
+            handleSuccess(editingId ? 'Cập nhật chương trình thành công!' : 'Thêm chương trình mới thành công!');
         } catch (error) {
-            alert('Lỗi: ' + (error.response?.data?.error || error.message));
+            handleError(error);
         }
     };
 
@@ -64,8 +66,9 @@ export default function ChuongTrinhList() {
             try {
                 await axios.delete(`${API_URL}/chuongtrinh/${row.ct_id}`);
                 fetchData();
+                handleSuccess('Xóa chương trình thành công!');
             } catch (error) {
-                alert('Lỗi: ' + (error.response?.data?.error || error.message));
+                handleError(error);
             }
         }
     };
