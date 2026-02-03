@@ -51,7 +51,7 @@ export default function BuoiHocList() {
     const handleSubmit = async (e) => {
         e.preventDefault();
 
-        // Validate: giờ kết thúc > giờ bắt đầu
+        // Kiểm tra: Giờ kết thúc phải lớn hơn giờ bắt đầu
         if (formData.giobd && formData.giokt && formData.giobd >= formData.giokt) {
             alert('Giờ kết thúc phải lớn hơn giờ bắt đầu!');
             return;
@@ -106,6 +106,13 @@ export default function BuoiHocList() {
             render: (row) => `${row.giobd} - ${row.giokt}`
         },
         { label: 'Môn học', field: 'tenmh', render: (row) => row.tenmh || <span className="text-gray-400">N/A</span> },
+        {
+            label: 'Giảng viên',
+            field: 'giangvien',
+            render: (row) => row.giangvien ?
+                <span className="text-sm text-gray-700">{row.giangvien}</span> :
+                <span className="text-gray-400 text-sm">Chưa phân công</span>
+        },
         { label: 'Phòng học', field: 'maphong', render: (row) => row.maphong || <span className="text-gray-400">N/A</span> },
         {
             label: 'Trạng thái phân công',
@@ -144,18 +151,30 @@ export default function BuoiHocList() {
                                 <div>
                                     <label className="block text-sm font-medium text-gray-700 mb-1">Giờ bắt đầu *</label>
                                     <input type="time" required value={formData.giobd}
-                                        onChange={(e) => setFormData({ ...formData, giobd: e.target.value })}
+                                        onChange={(e) => {
+                                            const start = e.target.value;
+                                            // Tự động tính Giờ kết thúc = Giờ bắt đầu + 2 tiếng
+                                            let end = '';
+                                            if (start) {
+                                                const [h, m] = start.split(':').map(Number);
+                                                const endH = (h + 2) % 24;
+                                                end = `${endH.toString().padStart(2, '0')}:${m.toString().padStart(2, '0')}`;
+                                            }
+                                            setFormData({ ...formData, giobd: start, giokt: end });
+                                        }}
                                         className="w-full px-3 py-2 border border-gray-300 rounded-lg focus:outline-none focus:ring-2 focus:ring-blue-500"
                                     />
                                 </div>
                                 <div>
-                                    <label className="block text-sm font-medium text-gray-700 mb-1">Giờ kết thúc *</label>
-                                    <input type="time" required value={formData.giokt}
-                                        onChange={(e) => setFormData({ ...formData, giokt: e.target.value })}
-                                        className="w-full px-3 py-2 border border-gray-300 rounded-lg focus:outline-none focus:ring-2 focus:ring-blue-500"
+                                    <label className="block text-sm font-medium text-gray-700 mb-1">Giờ kết thúc</label>
+                                    <input type="time" required value={formData.giokt} readOnly
+                                        className="w-full px-3 py-2 border border-gray-300 rounded-lg bg-gray-100 text-gray-500 cursor-not-allowed focus:outline-none"
                                     />
                                 </div>
                             </div>
+                            <p className="text-xs text-gray-500 italic mt-1 col-span-2">
+                                * Lưu ý: Mỗi buổi học mặc định kéo dài 2 giờ. Giờ kết thúc sẽ tự động tính toán.
+                            </p>
                             <div>
                                 <label className="block text-sm font-medium text-gray-700 mb-1">Lớp học *</label>
                                 <select required value={formData.lopmh_id}
@@ -164,10 +183,20 @@ export default function BuoiHocList() {
                                     <option value="">-- Chọn lớp học --</option>
                                     {lopMonHocList.map(lop => (
                                         <option key={lop.lopmh_id} value={lop.lopmh_id}>
-                                            {lop.tenmh} - {lop.tenkhoa}
+                                            {lop.tenmh} - {lop.tenkhoa} {lop.giangvien ? `(GV: ${lop.giangvien})` : ''}
                                         </option>
                                     ))}
                                 </select>
+                                {formData.lopmh_id && (
+                                    <div className="mt-1 text-xs text-blue-600 font-medium">
+                                        {(() => {
+                                            const selected = lopMonHocList.find(l => l.lopmh_id == formData.lopmh_id);
+                                            return selected?.giangvien
+                                                ? `Đang phân công cho: ${selected.giangvien}`
+                                                : 'Lớp này chưa có giảng viên phụ trách';
+                                        })()}
+                                    </div>
+                                )}
                             </div>
                             <div>
                                 <label className="block text-sm font-medium text-gray-700 mb-1">Phòng học *</label>

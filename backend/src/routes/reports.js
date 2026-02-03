@@ -111,9 +111,11 @@ router.get('/incomplete-students', async (req, res) => {
 // ============================================================================
 router.get('/teacher-payroll', async (req, res) => {
   try {
-    const { month, year } = req.query;
+    const { month, year, hourlyRate } = req.query;
     const monthVal = month || '02';
     const yearVal = year || '2026';
+    const rateVal = parseFloat(hourlyRate) || 100000; // Mặc định nếu không nhập
+
     const bd = `${yearVal}-${monthVal}-01`;
     const kt = monthVal === '12'
       ? `${parseInt(yearVal) + 1}-01-01`
@@ -123,7 +125,7 @@ router.get('/teacher-payroll', async (req, res) => {
       WITH params AS (
         SELECT $1::DATE AS bd,
                $2::DATE AS kt,
-               100000::NUMERIC AS luong_gio_tro_giang
+               $3::NUMERIC AS luong_gio_tro_giang
       ),
       hours_by_role AS (
         SELECT pc.gv_id, pc.vaitro, COUNT(*) * 2 AS so_gio
@@ -151,7 +153,7 @@ router.get('/teacher-payroll', async (req, res) => {
       ORDER BY tong_luong DESC, u.hoten;
     `;
 
-    const result = await pool.query(query, [bd, kt]);
+    const result = await pool.query(query, [bd, kt, rateVal]);
     res.json(result.rows);
   } catch (error) {
     console.error('Error /reports/teacher-payroll:', error);
@@ -164,21 +166,43 @@ router.get('/teacher-payroll', async (req, res) => {
 // ============================================================================
 router.get('/staff-payroll', async (req, res) => {
   try {
+    const { studentRate, month, year } = req.query;
+    const studentRateVal = parseFloat(studentRate) || 20000;
+
+    // Xác định ngày cuối tháng để tính trạng thái "đang làm việc"
+    const monthVal = month || '12';
+    const yearVal = year || '2026'; // Mặc định năm 2026 nếu không chọn
+
+    // Tính ngày chốt: Ngày 1 của tháng kế tiếp
+    let nextMonth = parseInt(monthVal) + 1;
+    let nextYear = parseInt(yearVal);
+    if (nextMonth > 12) {
+      nextMonth = 1;
+      nextYear += 1;
+    }
+    const cutoffDate = `${nextYear}-${nextMonth.toString().padStart(2, '0')}-01`;
+
     const query = `
       WITH params AS (
         SELECT 5000000::NUMERIC AS luong_cung,
-               20000::NUMERIC AS luong_ql_moi_hoc_vien
+               $1::NUMERIC AS luong_ql_moi_hoc_vien,
+               $2::DATE AS ngay_chot -- Ngày chốt (Không tính ngày này)
       ),
       headcount AS (
         SELECT QuanLy_ID AS ql_id, COUNT(*) AS so_nv_duoi_quyen
-        FROM NhanVien
+        FROM NhanVien nv
+        CROSS JOIN params p
+        WHERE nv.NgayVaoLam < p.ngay_chot -- Chỉ tính nhân viên vào làm trước ngày chốt
         GROUP BY QuanLy_ID
       ),
       students_per_nv AS (
-        SELECT ct.NV_QuanLy_ID AS nv_id, COUNT(DISTINCT dk.HV_ID) AS so_hv
+        SELECT ct.NV_QuanLy_ID AS nv_id, COUNT(DISTINCT (ct.CT_ID, dk.HV_ID)) AS so_hv
         FROM ChuongTrinh ct
         JOIN KhoaDaoTao kdt ON kdt.CT_ID = ct.CT_ID
-        LEFT JOIN DangKyKhoa dk ON dk.KDT_ID = kdt.KDT_ID
+        LEFT JOIN DangKyKhoa dk ON dk.KDT_ID = kdt.KDT_ID 
+             AND dk.TrangThai != 'HUY'
+        CROSS JOIN params p
+        WHERE dk.NgayDK < p.ngay_chot -- Chỉ tính học viên đăng ký trước ngày chốt
         GROUP BY ct.NV_QuanLy_ID
       )
       SELECT u.USER_ID AS nv_id, u.HoTen,
@@ -195,10 +219,11 @@ router.get('/staff-payroll', async (req, res) => {
       CROSS JOIN params p
       LEFT JOIN students_per_nv spn ON spn.nv_id = n.USER_ID
       LEFT JOIN headcount hc ON hc.ql_id = n.USER_ID
+      WHERE n.NgayVaoLam < p.ngay_chot -- Chỉ tính nhân viên đang làm việc trong tháng
       ORDER BY tong_luong DESC, u.HoTen;
     `;
 
-    const result = await pool.query(query);
+    const result = await pool.query(query, [studentRateVal, cutoffDate]);
     res.json(result.rows);
   } catch (error) {
     console.error('Error /reports/staff-payroll:', error);

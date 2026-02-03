@@ -3,16 +3,20 @@ import pool from '../db.js';
 
 const router = express.Router();
 
-// GET all lớp môn học
+// Lấy danh sách lớp môn học
 router.get('/', async (req, res) => {
     try {
         const result = await pool.query(`
       SELECT l.LopMH_ID AS lopmh_id, l.KDT_ID AS kdt_id, l.MH_MA AS mh_ma,
-             k.TenKhoa AS tenkhoa, m.TenMH AS tenmh, c.TenCT AS tenct
+             k.TenKhoa AS tenkhoa, m.TenMH AS tenmh, c.TenCT AS tenct,
+             STRING_AGG(DISTINCT u.HoTen, ', ') AS giangvien
       FROM LopMonHoc l
       LEFT JOIN KhoaDaoTao k ON l.KDT_ID = k.KDT_ID
       LEFT JOIN MonHoc m ON l.MH_MA = m.MH_MA
       LEFT JOIN ChuongTrinh c ON k.CT_ID = c.CT_ID
+      LEFT JOIN PhanCong pc ON pc.LopMH_ID = l.LopMH_ID AND pc.VaiTro = 'GIANGVIEN'
+      LEFT JOIN "User" u ON u.USER_ID = pc.GV_ID
+      GROUP BY l.LopMH_ID, k.TenKhoa, m.TenMH, c.TenCT
       ORDER BY l.LopMH_ID DESC
     `);
         res.json(result.rows);
@@ -22,7 +26,7 @@ router.get('/', async (req, res) => {
     }
 });
 
-// GET one lớp môn học
+// Lấy chi tiết một lớp môn học
 router.get('/:id', async (req, res) => {
     try {
         const { id } = req.params;
@@ -37,7 +41,7 @@ router.get('/:id', async (req, res) => {
     }
 });
 
-// POST - Tạo lớp môn học mới
+// Tạo lớp môn học mới
 router.post('/', async (req, res) => {
     try {
         const { kdt_id, mh_ma } = req.body;
@@ -52,7 +56,7 @@ router.post('/', async (req, res) => {
     }
 });
 
-// PUT - Cập nhật lớp môn học
+// Cập nhật lớp môn học
 router.put('/:id', async (req, res) => {
     try {
         const { id } = req.params;
@@ -71,7 +75,7 @@ router.put('/:id', async (req, res) => {
     }
 });
 
-// DELETE - Xóa lớp môn học
+// Xóa lớp môn học
 router.delete('/:id', async (req, res) => {
     try {
         const { id } = req.params;
